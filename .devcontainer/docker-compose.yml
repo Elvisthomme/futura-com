@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  # The main development container (Angular + Node.js environment)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Mount the project folder into the container
+    volumes:
+      - ..:/workspace:cached
+    # Forward Angular dev server port 4200 to host
+    ports:
+      - "4200:4200"
