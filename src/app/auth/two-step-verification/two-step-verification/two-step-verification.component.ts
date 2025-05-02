@@ -9,6 +9,7 @@ import { routes } from 'src/app/core/helpers/routes';
 })
 export class TwoStepVerificationComponent {
   public routes = routes;
+  public currentYear: number = new Date().getFullYear();
   constructor(private router: Router) {}
 
   navigation() {

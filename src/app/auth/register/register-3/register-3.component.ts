@@ -9,6 +9,7 @@ import { routes } from 'src/app/core/helpers/routes';
 })
 export class Register3Component {
   public routes = routes;
+  public currentYear: number = new Date().getFullYear();
  
   public password : boolean[] = [false];
 

@@ -10,6 +10,7 @@ import { routes } from 'src/app/core/core.index';
 export class Register2Component {
   public routes = routes;
   public password : boolean[] = [false];
+  public currentYear: number = new Date().getFullYear();
 
   public togglePassword(index: number){
     this.password[index] = !this.password[index]

@@ -17,10 +17,10 @@ export class routes {
     return this.base + '/forgot-password';
   }
   public static get forgotPassword2(): string {
-    return this.base + '/forgot-password-2';
+    return this.base + '/forgot-password';
   }
   public static get forgotPassword3(): string {
-    return this.base + '/forgot-password-3';
+    return this.base + '/forgot-password';
   }
   // auth routes *end*
 
@@ -335,7 +335,7 @@ export class routes {
     return this.charts + '/chart-apex';
   }
   public static get chartNg2(): string {
-    return this.charts + '/chart-ng2';
+    return this.charts + '/chart-ng';
   }
   public static get chartPrime(): string {
     return this.charts + '/prime-ng';
@@ -416,7 +416,7 @@ export class routes {
     return this.forms + '/form-grid-gutters';
   }
   public static get formSelect2(): string {
-    return this.forms + '/form-select-2';
+    return this.forms + '/form-select';
   }
   public static get formFloatingLabels(): string {
     return this.forms + '/form-floating-labels';
@@ -504,10 +504,10 @@ export class routes {
     return this.base + '/register';
   }
   public static get register2(): string {
-    return this.base + '/register-2';
+    return this.base + '/register';
   }
   public static get register3(): string {
-    return this.base + '/register-3';
+    return this.base + '/register';
   }
 
   // base ui pages routes starts
@@ -681,10 +681,10 @@ export class routes {
     return this.base + '/email-verification';
   }
   public static get emailVerification2(): string {
-    return this.base + '/email-verification-2';
+    return this.base + '/email-verification';
   }
   public static get emailVerification3(): string {
-    return this.base + '/email-verification-3';
+    return this.base + '/email-verification';
   }
   public static get employeesList(): string {
     return this.hrm + '/employee/employee-list';
@@ -852,28 +852,28 @@ export class routes {
     return this.purchase + '/purchase-returns';
   }
   public static get signIn2(): string {
-    return this.base + '/signin-2';
+    return this.base + '/signin';
   }
   public static get signIn3(): string {
-    return this.base + '/signin-3';
+    return this.base + '/signin';
   }
   public static get resetPassword(): string {
     return this.base + '/reset-password';
   }
   public static get resetPassword2(): string {
-    return this.base + '/reset-password-2';
+    return this.base + '/reset-password';
   }
   public static get resetPassword3(): string {
-    return this.base + '/reset-password-3';
+    return this.base + '/reset-password';
   }
   public static get twoStepVerification(): string {
     return this.base + '/two-step-verification';
   }
   public static get twoStepVerification2(): string {
-    return this.base + '/two-step-verification-2';
+    return this.base + '/two-step-verification';
   }
   public static get twoStepVerification3(): string {
-    return this.base + '/two-step-verification-3';
+    return this.base + '/two-step-verification';
   }
   public static get lockScreen(): string {
     return this.base + '/lock-screen';
@@ -957,10 +957,10 @@ export class routes {
     return this.base + '/success';
   }
   public static get success2(): string {
-    return this.base + '/success-2';
+    return this.base + '/success';
   }
   public static get success3(): string {
-    return this.base + '/success-3';
+    return this.base + '/success';
   }
   public static get permissions(): string {
     return this.usersManagement + '/permissions';

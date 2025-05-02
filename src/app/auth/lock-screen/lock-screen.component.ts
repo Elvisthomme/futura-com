@@ -8,6 +8,7 @@ import { routes } from 'src/app/core/helpers/routes';
 })
 export class LockScreenComponent {
   public routes = routes;
+  public currentYear: number = new Date().getFullYear();
   public password : boolean[] = [false];
 
   public togglePassword(index: number){

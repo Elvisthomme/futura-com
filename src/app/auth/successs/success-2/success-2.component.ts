@@ -8,5 +8,6 @@ import { routes } from 'src/app/core/core.index';
 })
 export class Success2Component {
   public routes = routes
+  public currentYear: number = new Date().getFullYear();
 
 }
