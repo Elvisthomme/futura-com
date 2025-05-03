@@ -4,10 +4,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0 --port=4200",
+    "start:fr": "ng serve --host=0.0.0.0 --port=4200 --configuration=fr",
+    "start:en": "ng serve --host=0.0.0.0 --port=4200 --configuration=en",
     "build": "ng build",
+    "build:fr": "ng build --configuration=fr",
+    "build:en": "ng build --configuration=en",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "extract-i18n": "ng extract-i18n --output-path src/i18n"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +38,7 @@
     "@popperjs/core": "^2.11.8",
     "angular-feather": "^6.5.1",
     "apexcharts": "^4.5.0",
+    "axios": "^1.9.0",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.8",
     "file-saver": "^2.0.5",
@@ -70,6 +76,8 @@
     "@angular-eslint/template-parser": "17.2.1",
     "@angular/cli": "^19.2.6",
     "@angular/compiler-cli": "^18.2.12",
+    "@angular/localize": "18.2.13",
+    "@types/axios": "^0.14.4",
     "@types/file-saver": "^2.0.5",
     "@types/jasmine": "~4.3.0",
     "@types/leaflet": "^1.9.15",

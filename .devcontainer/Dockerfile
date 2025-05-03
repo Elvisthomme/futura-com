@@ -15,5 +15,9 @@ RUN echo export NODE_OPTIONS="--max-old-space-size=8192" >> /root/.bashrc
 RUN echo export NODE_OPTIONS="--max-old-space-size=8192" >> /root/.bash_profile
 RUN echo export NODE_OPTIONS="--max-old-space-size=8192" >> /root/.profile
 
+RUN apt-get update && apt-get install -y procps && \
+    echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf && \
+    sysctl -p
+
 # Default command to keep the container alive
 CMD ["tail", "-f", "/dev/null"]

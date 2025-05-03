@@ -1,98 +1,141 @@
 <div class="account-content">
-    <div class="login-wrapper register-wrap bg-img">
-        <div class="login-content">
-            <form>
-                <div class="login-userset">
-                    <div class="login-logo logo-normal">
-                        <img src="assets/img/logo.png" alt="img">
-                    </div>
-                    <a [routerLink] = "routes.adminDashboard" class="login-logo logo-white">
-                        <img src="assets/img/logo-white.png" alt="">
-                    </a>
-                    <div class="login-userheading">
-                        <h3>Register</h3>
-                        <h4>Create New FuturaCom Account</h4>
-                    </div>
-                    <div class="form-login">
-                        <label>Name</label>
-                        <div class="form-addons">
-                            <input type="text" class="form-control">
-                            <img src="assets/img/icons/user-icon.svg" alt="img">
-                        </div>
-                    </div>
-                    <div class="form-login">
-                        <label>Email Address</label>
-                        <div class="form-addons">
-                            <input type="text" class="form-control">
-                            <img src="assets/img/icons/mail.svg" alt="img">
-                        </div>
-                    </div>
-                    <div class="form-login">
-                        <label>Password</label>
-                        <div class="pass-group">
-                            <input [type]="password[1] ? 'text' : 'password' " class="pass-input">
-                            <span class="fas toggle-password" [ngClass]=" password[1] ? 'fa-eye' : 'fa-eye-slash'"
-                                (click)="togglePassword(1)"></span>
-                        </div>
-                    </div>
-                    <div class="form-login">
-                        <label>Confirm Password</label>
-                        <div class="pass-group">
-                            <input [type]="password[2] ? 'text' : 'password' " class="pass-input">
-                            <span class="fas toggle-passwords" [ngClass]=" password[2] ? 'fa-eye' : 'fa-eye-slash'"
-                                (click)="togglePassword(2)"></span>
-                        </div>
-                    </div>
-                    <div class="form-login authentication-check">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="custom-control custom-checkbox custom-class-check justify-content-start">
-                                    <div class="custom-control custom-checkbox custom-class-check">
-                                        <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>I agree to the <a href="javascript:void(0);"
-                                                class="hover-a">Terms & Privacy</a>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-login">
-                        <button type="submit" class="btn btn-login" (click)="navigation()">Sign Up</button>
-                    </div>
-                    <div class="signinform">
-                        <h4>Already have an account ? <a [routerLink] = "routes.signIn" class="hover-a">Sign In Instead</a></h4>
-                    </div>
-                    <div class="form-setlogin or-text">
-                        <h4>OR</h4>
-                    </div>
-                    <div class="form-sociallink">
-                        <ul class="d-flex">
-                            <li>
-                                <a href="javascript:void(0);" class="facebook-logo">
-                                    <img src="assets/img/icons/facebook-logo.svg" alt="Facebook">
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);">
-                                    <img src="assets/img/icons/google.png" alt="Google">
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);" class="apple-logo">
-                                    <img src="assets/img/icons/apple-logo.svg" alt="Apple">
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
-                        <p>Copyright &copy; {{ currentYear }} FuturaCom. All rights reserved</p>
-                    </div>
+  <div class="login-wrapper register-wrap bg-img">
+    <div class="login-content">
+      <form [formGroup]="registerForm">
+        <div class="login-userset">
+          <div class="login-logo logo-normal">
+            <img src="assets/img/logo.png" alt="img">
+          </div>
+          <a [routerLink]="routes.adminDashboard" class="login-logo logo-white">
+            <img src="assets/img/logo-white.png" alt="">
+          </a>
+          <div class="login-userheading">
+            <h3 i18n="@@RegisterTitle">Register</h3>
+            <h4 i18n="RegisterText">Create New FuturaCom Account</h4>
+          </div>
+          <div class="form-login">
+            <label i18n="@@username">Username</label>
+            <div class="form-addons">
+              <input type="text" class="form-control" type="text" formControlName="username"
+                [class.is-invalid]="invalid('username')" [class.is-valid]="valid('username')">
+              <img src="assets/img/icons/user-icon.svg" alt="img">
+              <div class="text-danger">
+              @if(isRequiredError('username')){
+                <span i18n>Username is required</span>
+              }@else if (isMinLengthError('username')) {
+                <span i18n>Username is required</span>
+              }
+              </div>
+            </div>
+          </div>
+          <div class="form-login">
+            <label i18n>Company name</label>
+            <div class="form-addons">
+              <input type="text" class="form-control" type="text" formControlName="company_name"
+                [class.is-invalid]="invalid('company_name')" [class.is-valid]="valid('company_name')">
+              <img src="assets/img/icons/user-icon.svg" alt="img">
+              <div class="text-danger">
+              @if(isRequiredError('company_name')){
+                <span i18n>company_name is required</span>
+              }@else if (isMinLengthError('company_name')) {
+                <span i18n>company_name is required</span>
+              }
+              </div>
+            </div>
+          </div>
+          <div class="form-login">
+            <label i18n="CompanySubDomain|The subdomain that will prefix the webside @@companySubdomain">Company Sub domain</label>
+            <div class="form-addons">
+              <input type="text" class="form-control" type="text" formControlName="company_subdomain"
+                [class.is-invalid]="invalid('company_subdomain')" [class.is-valid]="valid('company_subdomain')">
+              <img src="assets/img/icons/user-icon.svg" alt="img">
+            </div>
+          </div>
+          <div class="form-login">
+            <label>Email Address</label>
+            <div class="form-addons">
+              <input type="text" class="form-control" type="email" formControlName="email"
+                [class.is-invalid]="invalid('email')" [class.is-valid]="valid('email')">
+              <img src="assets/img/icons/mail.svg" alt="img">
+            </div>
+          </div>
+          <div class="form-login">
+            <label>Password</label>
+            <div class="pass-group"><input class="pass-input" [type]="show.confirm ? 'text' : 'password'" required
+                formControlName="password"
+                [class.is-invalid]="invalid('password') || registerForm.errors?.['passwordMismatch']"
+                [class.is-valid]="valid('password')" />
+              <span class="fas toggle-password" [ngClass]="show.confirm ? 'fa-eye' : 'fa-eye-slash'"
+                (click)="togglePassword('confirm')"></span>
+            </div>
+          </div>
+          <div class="form-login">
+            <label>Confirm Password</label>
+            <div class="pass-group"><input class="pass-input" [type]="show.confirm ? 'text' : 'password'"
+                formControlName="password_confirmation"
+                [class.is-invalid]="invalid('password_confirmation') || registerForm.errors?.['passwordMismatch']"
+                [class.is-valid]="valid('password_confirmation')" />
+              <span class="fas toggle-password" [ngClass]="show.confirm ? 'fa-eye' : 'fa-eye-slash'"
+                (click)="togglePassword('confirm')"></span>
+            </div>
+          </div>
+          <div class="form-login authentication-check">
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="custom-control custom-checkbox custom-class-check justify-content-start">
+                  <div class="custom-control custom-checkbox custom-class-check">
+                    <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
+                      <input type="checkbox">
+                      <span class="checkmarks"></span>I agree to the <a href="javascript:void(0);" class="hover-a">Terms
+                        & Privacy</a>
+                    </label>
+                  </div>
                 </div>
-            </form>
+              </div>
+            </div>
+          </div>
+          <div class="form-login">
 
+            <button type="submit"
+                    class="btn btn-login w-100"
+                    [disabled]="registerForm.pending">
+              <span *ngIf="!registerForm.pending">Sign Up</span>
+              <span *ngIf="registerForm.pending"
+                    class="spinner-border spinner-border-sm"></span>
+            </button>
+          </div>
+          <div class="signinform">
+            <h4>Already have an account ? <a [routerLink]="routes.signIn" class="hover-a">Sign In Instead</a></h4>
+          </div>
+          <div class="form-setlogin or-text">
+            <h4>OR</h4>
+          </div>
+          <div class="form-sociallink">
+            <ul class="d-flex">
+              <li>
+                <a href="javascript:void(0);" class="facebook-logo">
+                  <img src="assets/img/icons/facebook-logo.svg" alt="Facebook">
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);">
+                  <img src="assets/img/icons/google.png" alt="Google">
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0);" class="apple-logo">
+                  <img src="assets/img/icons/apple-logo.svg" alt="Apple">
+                </a>
+              </li>
+
+            </ul>
+          </div>
+          <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
+            <p>Copyright &copy; {{ currentYear }} FuturaCom. All rights reserved</p>
+          </div>
         </div>
+      </form>
+
     </div>
+  </div>
 </div>

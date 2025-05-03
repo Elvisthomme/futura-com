@@ -13,7 +13,6 @@ import { LockScreenComponent } from './lock-screen/lock-screen.component';
 import { Success2Component } from './successs/success-2/success-2.component';
 import { Success3Component } from './successs/success-3/success-3.component';
 import { SuccessComponent } from './successs/success/success.component';
-import { RegisterComponent } from './register/register/register.component';
 import { EmailVerificationComponent } from './email-verification/email-verification/email-verification.component';
 import { EmailVerification2Component } from './email-verification/email-verification-2/email-verification-2.component';
 import { EmailVerification3Component } from './email-verification/email-verification-3/email-verification-3.component';
@@ -41,7 +40,6 @@ import { ForgotPassword3Component } from './forgot-password/forgot-password-3/fo
     SuccessComponent,
     Success2Component,
     Success3Component,
-    RegisterComponent,
     EmailVerificationComponent,
     EmailVerification2Component,
     EmailVerification3Component,
