@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host=0.0.0.0 --port=4200",
-    "start:fr": "ng serve --host=0.0.0.0 --port=4200 --configuration=fr",
-    "start:en": "ng serve --host=0.0.0.0 --port=4200 --configuration=en",
+    "start": "ng serve --host=0.0.0.0 --port=4200 --proxy-config proxy.conf.json",
+    "start:fr": "NODE_OPTIONS='--max-old-space-size=4096' ng serve --host=0.0.0.0 --port=4200 --proxy-config proxy.conf.json --configuration=fr",
+    "start:en": "NODE_OPTIONS='--max-old-space-size=4096' ng serve --host=0.0.0.0 --port=4200 --proxy-config proxy.conf.json --configuration=en",
     "build": "ng build",
     "build:fr": "ng build --configuration=fr",
     "build:en": "ng build --configuration=en",

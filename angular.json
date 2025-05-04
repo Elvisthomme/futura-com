@@ -4,10 +4,10 @@
   "newProjectRoot": "projects",
   "projects": {
     "template": {
-      
+
       "i18n": {
         "sourceLocale": "en",
-        "locales": 
+        "locales":
         {
           "fr": {
             "translation": "src/i18n/messages.fr.xlf",
@@ -15,7 +15,7 @@
           },
           "de": {
             "translation": "src/i18n/messages.xlf",
-            "baseHref": "" 
+            "baseHref": ""
           }
         }
     },
@@ -64,7 +64,7 @@
               "src/assets/icons/feather/css/iconfont.css",
               "src/assets/icons/bootstrap/bootstrap-icons.min.css",
               "src/assets/icons/remix/fonts/remixicon.css",
-              "src/assets/icons/boxicons/css/boxicons.min.css", 
+              "src/assets/icons/boxicons/css/boxicons.min.css",
               "./node_modules/ngx-lightbox/lightbox.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/plyr/dist/plyr.css",

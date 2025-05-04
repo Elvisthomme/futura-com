@@ -1,7 +1,7 @@
 <div class="account-content">
   <div class="login-wrapper register-wrap bg-img">
     <div class="login-content">
-      <form [formGroup]="registerForm">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="login-userset">
           <div class="login-logo logo-normal">
             <img src="assets/img/logo.png" alt="img">
@@ -11,7 +11,7 @@
           </a>
           <div class="login-userheading">
             <h3 i18n="@@RegisterTitle">Register</h3>
-            <h4 i18n="RegisterText">Create New FuturaCom Account</h4>
+            <h4 i18n="@@RegisterText">Create New FuturaCom Account</h4>
           </div>
           <div class="form-login">
             <label i18n="@@username">Username</label>
@@ -20,63 +20,91 @@
                 [class.is-invalid]="invalid('username')" [class.is-valid]="valid('username')">
               <img src="assets/img/icons/user-icon.svg" alt="img">
               <div class="text-danger">
-              @if(isRequiredError('username')){
-                <span i18n>Username is required</span>
-              }@else if (isMinLengthError('username')) {
-                <span i18n>Username is required</span>
-              }
+                @if(isRequiredError('username')){
+                <span i18n="@@userNameRequired">Username is required</span>
+                }@else if (isMinLengthError('username')) {
+                <span i18n="@@userNameMinLength">Username must have 4 charaters or more</span>
+                }
               </div>
             </div>
           </div>
           <div class="form-login">
-            <label i18n>Company name</label>
+            <label i18n="@@companyName">Company name</label>
             <div class="form-addons">
               <input type="text" class="form-control" type="text" formControlName="company_name"
                 [class.is-invalid]="invalid('company_name')" [class.is-valid]="valid('company_name')">
-              <img src="assets/img/icons/user-icon.svg" alt="img">
               <div class="text-danger">
-              @if(isRequiredError('company_name')){
-                <span i18n>company_name is required</span>
-              }@else if (isMinLengthError('company_name')) {
-                <span i18n>company_name is required</span>
-              }
+                @if(isRequiredError('company_name')){
+                <span i18n="@@companyNameRequired">Company name is required</span>
+                }@else if (isMinLengthError('company_name')) {
+                <span i18n="@@companyNameMinLength">Company name must have 3 charaters or more</span>
+                }
               </div>
             </div>
           </div>
           <div class="form-login">
-            <label i18n="CompanySubDomain|The subdomain that will prefix the webside @@companySubdomain">Company Sub domain</label>
+            <label i18n="@@companySubdomain">Company Sub domain</label>
             <div class="form-addons">
               <input type="text" class="form-control" type="text" formControlName="company_subdomain"
                 [class.is-invalid]="invalid('company_subdomain')" [class.is-valid]="valid('company_subdomain')">
-              <img src="assets/img/icons/user-icon.svg" alt="img">
+              <div class="text-danger">
+                @if(isRequiredError('company_subdomain')){
+                <span i18n="@@companySubdomainRequired">Company subdomain is required</span>
+                }@else if (isMinLengthError('company_subdomain')) {
+                <span i18n="@@companySubdomainMinLength">Company subdomain must have 3 charaters or more</span>
+                }@else if (invalid('company_subdomain')) {
+                <span i18n="@@invalidEmail">Provided subdomain is invalid</span>
+                }
+              </div>
             </div>
           </div>
           <div class="form-login">
-            <label>Email Address</label>
+            <label i18n="@@emailLabel">Email Address</label>
             <div class="form-addons">
               <input type="text" class="form-control" type="email" formControlName="email"
                 [class.is-invalid]="invalid('email')" [class.is-valid]="valid('email')">
               <img src="assets/img/icons/mail.svg" alt="img">
+              <div class="text-danger">
+                @if(isRequiredError('email')){
+                <span i18n="@@emailRequired">Email is required</span>
+                }@else if (invalid('email')) {
+                <span i18n="@@invalidEmail">Provided email is invalid</span>
+                }
+              </div>
             </div>
           </div>
           <div class="form-login">
-            <label>Password</label>
+            <label i18n="@@passwordLabel">Password</label>
             <div class="pass-group"><input class="pass-input" [type]="show.confirm ? 'text' : 'password'" required
-                formControlName="password"
-                [class.is-invalid]="invalid('password') || registerForm.errors?.['passwordMismatch']"
+                formControlName="password" [class.is-invalid]="invalid('password')"
                 [class.is-valid]="valid('password')" />
               <span class="fas toggle-password" [ngClass]="show.confirm ? 'fa-eye' : 'fa-eye-slash'"
                 (click)="togglePassword('confirm')"></span>
+              <div class="text-danger">
+                @if(isRequiredError('password')){
+                <span i18n="@@passwordRequired">Password is required</span>
+                } @else if (isMinLengthError('password')) {
+                <span i18n="@@passwordMinLength">Password must have 8 charaters or more</span>
+                }
+              </div>
             </div>
           </div>
           <div class="form-login">
-            <label>Confirm Password</label>
+            <label i18n="@@confirmPasswordLabel">Confirm Password</label>
             <div class="pass-group"><input class="pass-input" [type]="show.confirm ? 'text' : 'password'"
                 formControlName="password_confirmation"
                 [class.is-invalid]="invalid('password_confirmation') || registerForm.errors?.['passwordMismatch']"
                 [class.is-valid]="valid('password_confirmation')" />
               <span class="fas toggle-password" [ngClass]="show.confirm ? 'fa-eye' : 'fa-eye-slash'"
                 (click)="togglePassword('confirm')"></span>
+              <div class="text-danger">
+                @if(isRequiredError('password_confirmation')){
+                <span i18n="@@passwordConfirmationRequired">Confirmation password is required</span>
+                }@else if (ispasswordMismatch()) {
+                <span i18n="@@invalidPasswordConfirmation">Provided password confirmation does not match with the
+                  password</span>
+                }
+              </div>
             </div>
           </div>
           <div class="form-login authentication-check">
@@ -85,27 +113,35 @@
                 <div class="custom-control custom-checkbox custom-class-check justify-content-start">
                   <div class="custom-control custom-checkbox custom-class-check">
                     <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
-                      <input type="checkbox">
-                      <span class="checkmarks"></span>I agree to the <a href="javascript:void(0);" class="hover-a">Terms
-                        & Privacy</a>
+                      <input type="checkbox" formControlName="terms"
+                        [class.is-invalid]="invalid('terms') || registerForm.errors?.['passwordMismatch']"
+                        [class.is-valid]="valid('terms')">
+                      <span class="checkmarks"></span><ng-container i18n="@@agreeTerms"> I agree to the
+                      </ng-container>
+                      <a href="javascript:void(0);" class="hover-a">
+                        <ng-container i18n="@@agreeTerms">Terms & Privacy</ng-container>
+                      </a>
                     </label>
                   </div>
                 </div>
               </div>
             </div>
+            <div class="text-danger">
+              @if (invalid('terms')) {
+              <span i18n="@@termConfirmation">You must accept terms</span>
+              }
+            </div>
           </div>
           <div class="form-login">
 
-            <button type="submit"
-                    class="btn btn-login w-100"
-                    [disabled]="registerForm.pending">
+            <button type="submit" class="btn btn-login w-100" [disabled]="registerForm.pending">
               <span *ngIf="!registerForm.pending">Sign Up</span>
-              <span *ngIf="registerForm.pending"
-                    class="spinner-border spinner-border-sm"></span>
+              <span *ngIf="registerForm.pending" class="spinner-border spinner-border-sm"></span>
             </button>
           </div>
           <div class="signinform">
-            <h4>Already have an account ? <a [routerLink]="routes.signIn" class="hover-a">Sign In Instead</a></h4>
+            <h4>Already have an account ? <a [routerLink]="routes.signIn" class="hover-a">Sign In Instead</a>
+            </h4>
           </div>
           <div class="form-setlogin or-text">
             <h4>OR</h4>

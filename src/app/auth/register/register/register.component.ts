@@ -9,14 +9,14 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { routes } from 'src/app/core/helpers/routes';
-import { AuthService, RegisterPayload } from 'src/app/core/auth/auth.service';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { AuthService, RegisterPayload } from 'src/app/core/service/auth/auth.service';
+import { CommonModule } from '@angular/common';
 
 const SUBDOMAIN_REGEX = /^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])?$/i;
 
 function passwordMatch(group: AbstractControl): ValidationErrors | null {
   const p = group.get('password')?.value;
-  const c = group.get('passwordConfirmation')?.value;
+  const c = group.get('password_confirmation')?.value;
   return p && c && p !== c ? { passwordMismatch: true } : null;
 }
 
@@ -35,7 +35,7 @@ export class RegisterComponent {
 
   /** page routes for template */
   routes = routes;
-  
+
 
   /** show/hide pwd fields */
   show = { password: false, confirm: false };
@@ -53,7 +53,7 @@ export class RegisterComponent {
     email: new FormControl('', [Validators.required,Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     password_confirmation: new FormControl('', Validators.required),
-    terms: new FormControl(false, Validators.requiredTrue),
+    terms: new FormControl(true, Validators.requiredTrue),
   }, { validators: passwordMatch });
 
   /** alias for template */
@@ -64,6 +64,7 @@ export class RegisterComponent {
 
   togglePassword(which: 'password' | 'confirm'): void {
     this.show[which] = !this.show[which];
+    console.log(this.registerForm)
   }
 
   /** helpers for template validation classes */
@@ -75,9 +76,13 @@ export class RegisterComponent {
     const c = this.f[name];
     return (c.touched || this.submitted) && c.valid;
   }
-  
+
   isRequiredError(field: keyof typeof this.f):boolean {
     return this.registerForm.controls[field].touched && this.registerForm.controls[field].errors?.['required']
+  }
+
+  ispasswordMismatch():boolean {
+    return this.registerForm.hasError('passwordMismatch') && this.registerForm.controls['password'].touched && this.registerForm.controls['password_confirmation'].touched
   }
 
   isMinLengthError(field: keyof typeof this.f): boolean{
@@ -95,19 +100,25 @@ export class RegisterComponent {
 
     const v = this.registerForm.value;
 
-    // const payload: RegisterPayload = {
-      // username: v.username!,
-      // company_name: v.companyName!,
-      // company_subdomain: v.companySubdomain!,
-      // email: v.email!,
-      // password: v.password!,
-      // passwordConfirmation: v.passwordConfirmation!
-    // };
+    const payload: RegisterPayload = {
+      username: v.username!,
+      company_name: v.company_name!,
+      company_subdomain: v.company_subdomain!,
+      email: v.email!,
+      password: v.password!,
+      password_confirmation: v.password_confirmation!,
+      terms: v.terms!
+    };
+
+    console.log(payload);
 
     this.registerForm.disable();
-    // this.auth.register(payload).subscribe({
-    //   next: () => this.router.navigate([routes.dashboard]),
-    //   error: () => this.registerForm.enable()
-    // });
+    this.auth.register(payload).subscribe({
+      next: (value) => {
+        this.router.navigate([routes.dashboard])
+        console.log(value);
+      },
+      error: () => this.registerForm.enable()
+    });
   }
 }

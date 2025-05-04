@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   // Point to your Laravel 11 public-path (change port or trailing slash to suit)
-  apiBaseUrl: 'http://localhost:8080/api/',
+  apiBaseUrl: 'http://192.168.1.253/',
 
 };
 
