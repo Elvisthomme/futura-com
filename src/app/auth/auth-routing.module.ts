@@ -22,9 +22,13 @@ import { SuccessComponent } from './successs/success/success.component';
 import { Success2Component } from './successs/success-2/success-2.component';
 import { Success3Component } from './successs/success-3/success-3.component';
 import { RegisterComponent } from './register/register/register.component';
+import { AuthGuard, GuestGuard } from '../core/core.index';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'signin', pathMatch: 'full' },
+  {
+    path: '', redirectTo: 'signin', pathMatch: 'full',
+    canActivate: [GuestGuard],
+  },
 
   {
     path: '',
@@ -33,6 +37,7 @@ const routes: Routes = [
       {
         path: 'email-verification',
         component: EmailVerificationComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'email-verification-2',
@@ -53,10 +58,12 @@ const routes: Routes = [
       {
         path: 'reset-password',
         component: ResetPasswordComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'forgot-password',
         component: ForgotPasswordComponent,
+        canActivate: [GuestGuard],
       },
       {
         path: 'forgot-password-2',
@@ -69,6 +76,7 @@ const routes: Routes = [
       {
         path: 'register',
         component: RegisterComponent,
+        canActivate: [GuestGuard],
       },
       {
         path: 'register-2',
@@ -81,6 +89,7 @@ const routes: Routes = [
       {
         path: 'signin',
         component: SigninComponent,
+        canActivate: [GuestGuard],
       },
       {
         path: 'signin-2',
@@ -126,4 +135,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthRoutingModule {}
+export class AuthRoutingModule { }
