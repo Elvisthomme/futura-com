@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 
 const SUBDOMAIN_REGEX = /^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])?$/i;
 
-function passwordMatch(group: AbstractControl): ValidationErrors | null {
+export function passwordMatch(group: AbstractControl): ValidationErrors | null {
   const p = group.get('password')?.value;
   const c = group.get('password_confirmation')?.value;
   return p && c && p !== c ? { passwordMismatch: true } : null;

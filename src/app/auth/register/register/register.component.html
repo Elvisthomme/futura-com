@@ -114,7 +114,7 @@
                   <div class="custom-control custom-checkbox custom-class-check">
                     <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
                       <input type="checkbox" formControlName="terms"
-                        [class.is-invalid]="invalid('terms') || registerForm.errors?.['passwordMismatch']"
+                        [class.is-invalid]="invalid('terms')"
                         [class.is-valid]="valid('terms')">
                       <span class="checkmarks"></span><ng-container i18n="@@agreeTerms"> I agree to the
                       </ng-container>
@@ -135,12 +135,12 @@
           <div class="form-login">
 
             <button type="submit" class="btn btn-login w-100" [disabled]="registerForm.pending">
-              <span *ngIf="!registerForm.pending">Sign Up</span>
+              <span *ngIf="!registerForm.pending" i18n="@@registerLabel">Sign Up</span>
               <span *ngIf="registerForm.pending" class="spinner-border spinner-border-sm"></span>
             </button>
           </div>
           <div class="signinform">
-            <h4>Already have an account ? <a [routerLink]="routes.signIn" class="hover-a">Sign In Instead</a>
+            <h4> <ng-container i18n="@@alreadyHaveAccountText">Already have an account ?</ng-container> <a [routerLink]="routes.signIn" class="hover-a" i18n="@@loginInsteadLabel">Sign In Instead</a>
             </h4>
           </div>
           <div class="form-setlogin or-text">
@@ -167,7 +167,7 @@
             </ul>
           </div>
           <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
-            <p>Copyright &copy; {{ currentYear }} FuturaCom. All rights reserved</p>
+            <p i18n="@@copyrightLabel">Copyright &copy; {{ currentYear }} FuturaCom. All rights reserved</p>
           </div>
         </div>
       </form>

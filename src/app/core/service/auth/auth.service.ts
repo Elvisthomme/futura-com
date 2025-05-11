@@ -52,7 +52,7 @@ export class AuthService {
 
 
   /** POST /api/login */
-  login(payload: RegisterPayload): Observable<ApiResponse<unknown>> {
+  login(payload: LoginPayload): Observable<ApiResponse<unknown>> {
     const fd = new FormData();
     Object.entries(payload).forEach(([k, v]) => v != null && fd.append(k, v as string | Blob));
 

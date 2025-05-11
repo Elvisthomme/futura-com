@@ -1,7 +1,7 @@
 <div class="account-content">
     <div class="login-wrapper bg-img">
         <div class="login-content">
-            <form>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <div class="login-userset">
                     <div class="login-logo logo-normal">
                        <img src="assets/img/logo.png" alt="img">
@@ -10,43 +10,61 @@
                        <img src="assets/img/logo-white.png"  alt="">
                    </a>
                    <div class="login-userheading">
-                       <h3>Sign In</h3>
-                       <h4>Access the FuturaCom panel using your email and passcode.</h4>
+                       <h3 i18n="@@loginTitle">Sign In</h3>
+                       <h4 i18n="@@loginText">Access the FuturaCom panel using your email and passcode.</h4>
                    </div>
-                   <div class="form-login mb-3">
-                       <label class="form-label">Email Address</label>
-                       <div class="form-addons">
-                           <input type="text" class="form- control">
-                           <img src="assets/img/icons/mail.svg" alt="img">
-                       </div>
-                   </div>
-                   <div class="form-login mb-3">
-                       <label class="form-label">Password</label>
-                       <div class="pass-group">
-                        <input [type]="password[1] ? 'text' : 'password' " class="pass-input">
-                        <span class="fas toggle-password" [ngClass]=" password[1] ? 'fa-eye' : 'fa-eye-slash'" (click)="togglePassword(1)"></span>
+                   <div class="form-login">
+                    <label i18n="@@emailLabel">Email Address</label>
+                    <div class="form-addons">
+                      <input type="text" class="form-control" type="email" formControlName="email"
+                        [class.is-invalid]="invalid('email')" [class.is-valid]="valid('email')">
+                      <img src="assets/img/icons/mail.svg" alt="img">
+                      <div class="text-danger">
+                        @if(isRequiredError('email')){
+                        <span i18n="@@emailRequired">Email is required</span>
+                        }@else if (invalid('email')) {
+                        <span i18n="@@invalidEmail">Provided email is invalid</span>
+                        }
+                      </div>
                     </div>
-                   </div>
+                  </div>
+                  <div class="form-login">
+                    <label i18n="@@passwordLabel">Password</label>
+                    <div class="pass-group"><input class="pass-input" [type]="show  ? 'text' : 'password'" required
+                        formControlName="password" [class.is-invalid]="invalid('password')"
+                        [class.is-valid]="valid('password')" />
+                      <span class="fas toggle-password" [ngClass]="show ? 'fa-eye' : 'fa-eye-slash'"
+                        (click)="togglePassword()"></span>
+                      <div class="text-danger">
+                        @if(isRequiredError('password')){
+                        <span i18n="@@passwordRequired">Password is required</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
                    <div class="form-login authentication-check">
                        <div class="row">
                            <div class="col-12 d-flex align-items-center justify-content-between">
                                <div class="custom-control custom-checkbox custom-class-check">
                                    <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
-                                       <input type="checkbox" class="form-control">
-                                       <span class="checkmarks"></span>Remember me
+                                       <input type="checkbox" class="form-control" formControlName="remember">
+                                       <span class="checkmarks"></span> <ng-container  i18n="@@rememberMeLabel"> Remember me</ng-container>
                                    </label>
                                </div>
                                <div class="text-end">
-                                   <a class="forgot-link" [routerLink] = "routes.forgotPassword">Forgot Password?</a>
+                                   <a class="forgot-link" [routerLink] = "routes.forgotPassword" i18n="@@forgotPasswordLabel" >Forgot Password?</a>
                                </div>
-                           </div>                                    
+                           </div>
                        </div>
                    </div>
                    <div class="form-login">
-                       <button type="button" class="btn btn-login" (click)="navigation()">Sign In</button>
-                   </div>
+
+                    <button type="submit" class="btn btn-login w-100" [disabled]="loginForm.pending">
+                      <span *ngIf="!loginForm.pending"i18n="@@loginLabel">Sign In</span>
+                      <span *ngIf="loginForm.pending" class="spinner-border spinner-border-sm"></span>
+                    </button>                   </div>
                    <div class="signinform">
-                       <h4>New on our platform?<a [routerLink] = "routes.register" class="hover-a"> Create an account</a></h4>
+                       <h4><ng-container i8n="@@newOnPlatforLabel">New on our platform?</ng-container><a [routerLink] = "routes.register" class="hover-a" i18n="@@registerLabel"> Create an account</a></h4>
                    </div>
                    <div class="form-setlogin or-text">
                        <h4>OR</h4>
@@ -68,10 +86,10 @@
                                    <img src="assets/img/icons/apple-logo.svg" alt="Apple">
                                </a>
                            </li>
-                           
+
                        </ul>
                        <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
-                           <p>Copyright &copy; 2023 FuturaCom. All rights reserved</p>
+                           <p i18n="@@copyrightLabel">Copyright &copy; {{currentYear}} FuturaCom. All rights reserved</p>
                        </div>
                    </div>
                </div>
