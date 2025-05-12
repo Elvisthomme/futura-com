@@ -2,14 +2,14 @@
 <div class="header">
 
   <!-- Logo -->
-  <div class="header-left active" (mouseover)="miniSideBarMouseHover('over')" (mouseout)="miniSideBarMouseHover('out')" >
-    <a [routerLink] = "routes.adminDashboard" class="logo logo-normal">
+  <div class="header-left active" (mouseover)="miniSideBarMouseHover('over')" (mouseout)="miniSideBarMouseHover('out')">
+    <a [routerLink]="routes.adminDashboard" class="logo logo-normal">
       <img src="assets/img/logo.png" alt="">
     </a>
-    <a [routerLink] = "routes.adminDashboard" class="logo logo-white">
+    <a [routerLink]="routes.adminDashboard" class="logo logo-white">
       <img src="assets/img/logo-white.png" alt="">
     </a>
-    <a [routerLink] = "routes.adminDashboard" class="logo-small">
+    <a [routerLink]="routes.adminDashboard" class="logo-small">
       <img src="assets/img/logo-small.png" alt="">
     </a>
     <a id="toggle_btn" href="javascript:void(0);" (click)="toggleSidebar()" [ngClass]="{'d-none': page === 'pos'}">
@@ -87,25 +87,20 @@
       <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
         <span class="user-info">
           <span class="user-letter">
-            <img src="assets/img/store/store-01.png" alt="Store Logo" class="img-fluid">
+            <img [src]="selectedStore?.image_url ??'assets/img/store/store-03.png'" alt="Store Logo" class="img-fluid">
           </span>
           <span class="user-detail">
-            <span class="user-name">Select Store</span>
+            @if(selectedStore){
+            <span class="user-name">{{selectedStore.name}}</span>
+            }@else{
+            <span class="user-name" i18n="@@selectStoreTitle">Select Store</span>
+            }
           </span>
         </span>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/store/store-01.png" alt="Store Logo" class="img-fluid"> Grocery Alpha
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/store/store-02.png" alt="Store Logo" class="img-fluid"> Grocery Apex
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/store/store-03.png" alt="Store Logo" class="img-fluid"> Grocery Bevy
-        </a>
-        <a href="javascript:void(0);" class="dropdown-item">
-          <img src="assets/img/store/store-04.png" alt="Store Logo" class="img-fluid"> Grocery Eden
+        <a  href="#" (click)="selectStore(store)"  class="dropdown-item" *ngFor="let store in stores">
+          <img [src]="store.image_url ?? 'assets/img/store/store-03.png'" [alt]="store.name + 'Store Logo'" class="img-fluid"> {{store.name}}
         </a>
       </div>
     </li>
@@ -139,15 +134,15 @@
       </a>
     </li>
     <li class="nav-item nav-item-box">
-      <a [routerLink] = "routes.email">
+      <a [routerLink]="routes.email">
         <i class="feather icon-mail"></i>
-        <span class="badge rounded-pill">1</span>
+        <span class="badge rounded-pill">{{messageCount}}</span>
       </a>
     </li>
     <!-- Notifications -->
     <li class="nav-item dropdown nav-item-box">
       <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-        <i class="feather icon-bell"></i><span class="badge rounded-pill">2</span>
+        <i class="feather icon-bell"></i><span class="badge rounded-pill">{{notificationCount}}</span>
       </a>
       <div class="dropdown-menu notifications">
         <div class="topnav-dropdown-header">
@@ -157,7 +152,7 @@
         <div class="noti-content">
           <ul class="notification-list">
             <li class="notification-message">
-              <a [routerLink] = "routes.activities">
+              <a [routerLink]="routes.activities">
                 <div class="media d-flex">
                   <span class="avatar flex-shrink-0">
                     <img alt="" src="assets/img/profiles/avatar-02.jpg">
@@ -173,7 +168,7 @@
               </a>
             </li>
             <li class="notification-message">
-              <a [routerLink] = "routes.activities">
+              <a [routerLink]="routes.activities">
                 <div class="media d-flex">
                   <span class="avatar flex-shrink-0">
                     <img alt="" src="assets/img/profiles/avatar-03.jpg">
@@ -190,7 +185,7 @@
               </a>
             </li>
             <li class="notification-message">
-              <a [routerLink] = "routes.activities">
+              <a [routerLink]="routes.activities">
                 <div class="media d-flex">
                   <span class="avatar flex-shrink-0">
                     <img alt="" src="assets/img/profiles/avatar-06.jpg">
@@ -207,7 +202,7 @@
               </a>
             </li>
             <li class="notification-message">
-              <a [routerLink] = "routes.activities">
+              <a [routerLink]="routes.activities">
                 <div class="media d-flex">
                   <span class="avatar flex-shrink-0">
                     <img alt="" src="assets/img/profiles/avatar-17.jpg">
@@ -222,7 +217,7 @@
               </a>
             </li>
             <li class="notification-message">
-              <a [routerLink] = "routes.activities">
+              <a [routerLink]="routes.activities">
                 <div class="media d-flex">
                   <span class="avatar flex-shrink-0">
                     <img alt="" src="assets/img/profiles/avatar-13.jpg">
@@ -239,24 +234,24 @@
           </ul>
         </div>
         <div class="topnav-dropdown-footer">
-          <a [routerLink] = "routes.activities">View all Notifications</a>
+          <a [routerLink]="routes.activities" i18n="@@viewAllNotificationTitle">View all Notifications</a>
         </div>
       </div>
     </li>
     <!-- /Notifications -->
 
     <li class="nav-item nav-item-box">
-      <a [routerLink] = "routes.generalSettings"><i class="feather icon-settings"></i></a>
+      <a [routerLink]="routes.generalSettings"><i class="feather icon-settings"></i></a>
     </li>
     <li class="nav-item dropdown has-arrow main-drop">
       <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
         <span class="user-info">
           <span class="user-letter">
-            <img src="assets/img/profiles/avator1.jpg" alt="" class="img-fluid">
+            <img [src]="userImage ?? 'assets/img/profiles/avator1.jpg'" alt="" class="img-fluid">
           </span>
           <span class="user-detail">
-            <span class="user-name">John Smilga</span>
-            <span class="user-role">Super Admin</span>
+            <span class="user-name">{{userName}}</span>
+            <span class="user-role">{{userStoreRole}}</span>
           </span>
         </span>
       </a>
@@ -266,17 +261,24 @@
             <span class="user-img"><img src="assets/img/profiles/avator1.jpg" alt="">
               <span class="status online"></span></span>
             <div class="profilesets">
-              <h6>John Smilga</h6>
-              <h5>Super Admin</h5>
+              <h6>{{userName}}</h6>
+              <h5>{{userStoreRole}}</h5>
             </div>
           </div>
           <hr class="m-0">
-          <a class="dropdown-item" [routerLink] = "routes.profile"> <i class="me-2" class="feather icon-user"></i> My Profile</a>
-          <a class="dropdown-item" [routerLink] = "routes.generalSettings"><i class="me-2"
-              class="feather icon-settings"></i>Settings</a>
+          <a class="dropdown-item" [routerLink]="routes.profile"> <i class="me-2" class="feather icon-user"></i> My
+            <ng-container i18n="@@profileTitle">Profile</ng-container>
+          </a>
+          <a class="dropdown-item" [routerLink]="routes.generalSettings"><i class="me-2"
+              class="feather icon-settings"></i>
+                       <ng-container i18n="@@settingsTitle">Settings</ng-container>
+            </a>
           <hr class="m-0">
-          <a class="dropdown-item logout pb-0" [routerLink] = "routes.signIn"><img src="assets/img/icons/log-out.svg" class="me-2"
-              alt="img">Logout</a>
+          <a class="dropdown-item logout pb-0" href="#" (click)="onLogout($event)" >
+            <img src="assets/img/icons/log-out.svg" class="me-2" alt="img" />
+            <ng-container i18n="@@logoutTitle">Logout</ng-container>
+          </a>
+
         </div>
       </div>
     </li>
@@ -288,9 +290,11 @@
     <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
         class="fa fa-ellipsis-v"></i></a>
     <div class="dropdown-menu dropdown-menu-right">
-      <a class="dropdown-item" [routerLink] = "routes.profile">My Profile</a>
-      <a class="dropdown-item" [routerLink] = "routes.generalSettings">Settings</a>
-      <a class="dropdown-item" [routerLink] = "routes.signIn">Logout</a>
+      <a class="dropdown-item" [routerLink]="routes.profile" i18n="@@myProfileTitle">My Profile</a>
+      <a class="dropdown-item" [routerLink]="routes.generalSettings" i18n="@@settingsTitle">Settings</a>
+      <a class="dropdown-item logout pb-0" href="#" (click)="onLogout($event)"  i18n="@@logoutTitle">
+        Logout
+      </a>
     </div>
   </div>
   <!-- /Mobile Menu -->

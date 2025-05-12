@@ -7,6 +7,7 @@ import {
 import { Router } from '@angular/router';
 import { routes } from 'src/app/core/helpers/routes';
 import { AuthService, LoginPayload } from 'src/app/core/service/auth/auth.service';
+import { WebstorgeService } from 'src/app/shared/webstorge.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,7 +17,7 @@ import Swal from 'sweetalert2';
 })
 export class SigninComponent {
   private auth = inject(AuthService);
-  private router = inject(Router);
+    private webstorge = inject(WebstorgeService);
 
   /** page routes for template */
   routes = routes;
@@ -82,9 +83,8 @@ export class SigninComponent {
 
     this.loginForm.disable();
     this.auth.login(payload).subscribe({
-      next: (value) => {
-        this.router.navigate([routes.dashboard])
-        console.log(value);
+      next: () => {
+        this.webstorge.login();
       },
       error: (error) => {
         this.loginForm.enable()

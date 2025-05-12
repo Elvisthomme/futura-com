@@ -258,7 +258,7 @@ export interface expenseList {
   categoryName?: string;
   reference?: string;
   date?: string;
-  
+
   status?: string;
   amount?: string;
   description?: string;
@@ -461,7 +461,7 @@ export interface languagesetting {
   done: string;
   progress: string;
   status: string;
-  img:string;
+  img: string;
   isSelected?: boolean;
 }
 export interface callHistory {
@@ -612,7 +612,7 @@ export interface payrollList {
   img: string;
   sNo: number;
   isSelected?: boolean;
-  
+
 
 }
 export interface salesReport {
@@ -677,7 +677,7 @@ export interface quotationList {
   status: string;
   grandTotal: string;
   isSelected?: boolean;
-  
+
 
 }
 export interface qrCode {
@@ -701,7 +701,7 @@ export interface leavesadmin {
   appliedOn: string;
   status: string;
   img: string;
-  value:string;
+  value: string;
   isSelected?: boolean;
 }
 export interface leavestype {
@@ -899,7 +899,7 @@ export interface pospurchase {
   reference: string;
   customer: string;
   amount: string;
- 
+
 }
 export interface videocall {
   sNo: number;

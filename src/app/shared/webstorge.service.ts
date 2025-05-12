@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { routes } from '../core/helpers/routes';
 
@@ -7,20 +7,16 @@ import { routes } from '../core/helpers/routes';
   providedIn: 'root',
 })
 export class WebstorgeService {
-
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   public login(): void {
     localStorage.setItem('authenticated', 'true');
     this.router.navigate([routes.dashboard]);
   }
-  public submit(): void {
-    localStorage.setItem('authenticated', 'true');
-    this.router.navigate([routes.dashboard]);
-  }
-  public Logout(): void {
-    localStorage.removeItem('authorized');
+
+  public logout(): void {
+    localStorage.removeItem('authenticated');
     localStorage.removeItem('loginTime');
-    this.router.navigate(['/auth/signin']);
+    this.router.navigate([routes.signIn]);
   }
 }

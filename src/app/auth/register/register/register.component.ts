@@ -1,3 +1,4 @@
+import { WebstorgeService } from 'src/app/shared/webstorge.service';
 import { Component, inject } from '@angular/core';
 import {
   FormControl,
@@ -32,6 +33,7 @@ export function passwordMatch(group: AbstractControl): ValidationErrors | null {
 export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private webstorge = inject(WebstorgeService);
 
   /** page routes for template */
   routes = routes;
@@ -114,9 +116,8 @@ export class RegisterComponent {
 
     this.registerForm.disable();
     this.auth.register(payload).subscribe({
-      next: (value) => {
-        this.router.navigate([routes.dashboard])
-        console.log(value);
+      next: () => {
+        this.webstorge.login();
       },
       error: () => this.registerForm.enable()
     });

@@ -27,7 +27,6 @@ import { AuthGuard, GuestGuard } from '../core/core.index';
 const routes: Routes = [
   {
     path: '', redirectTo: 'signin', pathMatch: 'full',
-    canActivate: [GuestGuard],
   },
 
   {

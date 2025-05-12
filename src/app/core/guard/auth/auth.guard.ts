@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -6,16 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthGuard  {
-  constructor(private router: Router) {}
+  private router = inject(Router);
+
   canActivate():
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (localStorage.getItem('authorized')) {
+    if (localStorage.getItem('authenticated')) {
       return true;
     } else {
-      this.router.navigate(['/auth/signin']);
+      this.router.navigate(['/signin']);
       return false;
     }
   }

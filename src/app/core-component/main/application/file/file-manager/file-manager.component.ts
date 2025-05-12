@@ -9,7 +9,7 @@ import { routes } from 'src/app/core/helpers/routes';
 import { DataService } from 'src/app/core/service/data/data.service';
 import { PaginationService, pageSelection, tablePageSize } from 'src/app/shared/custom-pagination/pagination.service';
 import { file } from 'src/app/shared/model/page.model';
-import * as Plyr from 'plyr';
+import Plyr from 'plyr';
 
 interface data {
   value: string;
@@ -28,7 +28,7 @@ export class FileManagerComponent implements OnInit {
   public selectedValue3 = '';
   public selectedValue4 = '';
   public selectedValue5 = '';
- 
+
   selectedList1: data[] = [
     { value: 'Owned By Me' },
     { value: 'Owned by Anyone' },
@@ -52,7 +52,7 @@ export class FileManagerComponent implements OnInit {
     { value: 'Last Modified' },
     { value: 'Last Modified by Me' },
     { value: 'Last Opened by Me' },
-    
+
   ];
   selectedList5: data[] = [
     { value: 'Sort by Date' },
@@ -61,7 +61,7 @@ export class FileManagerComponent implements OnInit {
     { value: 'Order Ascending' },
     { value: 'Order Descending' },
     { value: 'Upload Time' },
-    
+
   ];
   // pagination variables
   public tableData: Array<file> = [];
@@ -199,7 +199,7 @@ export class FileManagerComponent implements OnInit {
     this.sidebar.toggleCollapse();
     this.isCollapsed = !this.isCollapsed;
   }
-  public player!: Plyr;        
+  public player!: Plyr;
 
   ngOnInit() {
       this.player = new Plyr('#plyrID', { captions: { active: true } });

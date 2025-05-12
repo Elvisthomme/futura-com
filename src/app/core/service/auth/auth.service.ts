@@ -5,6 +5,9 @@ import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { CsrfService } from '../csrf/csrf.service';
+import { WebstorgeService } from 'src/app/shared/webstorge.service';
+import { attachAuthExpiredInterceptor } from '../../interceptors/axios-auth-expired.interceptor';
+import { User } from '../../core.index';
 
 export interface RegisterPayload {
   username: string;
@@ -20,7 +23,6 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
-export interface ApiResponse<T> { data: T; message: string; }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -32,38 +34,60 @@ export class AuthService {
     xsrfHeaderName: 'X-XSRF-TOKEN',
     headers: { Accept: 'application/json' }
   });
-  private csrf: CsrfService = inject(CsrfService);
-  /* Inject the CsrfService */
+  private readonly csrf = inject(CsrfService);
+  private readonly webstorage = inject(WebstorgeService);
 
-
+  constructor() {
+    attachAuthExpiredInterceptor(
+      this.http,
+      () => this.webstorage.logout(),   // or this.runLocalLogoutSideEffects()
+    );
+  }
   /** POST /api/register */
-  register(payload: RegisterPayload): Observable<ApiResponse<unknown>> {
+  register(payload: RegisterPayload): Observable<User> {
     const fd = new FormData();
     Object.entries(payload).forEach(([k, v]) => v != null && fd.append(k, v as string | Blob));
 
     /* 1️⃣  Ensure CSRF cookie, then 2️⃣  run the real request */
     return this.csrf.init().pipe(
       switchMap(() =>
-        from(this.http.post<ApiResponse<unknown>>('/api/register', fd))
+        from(this.http.post<User>('/api/register', fd))
       ),
-      map((resp: AxiosResponse<ApiResponse<unknown>>) => resp.data)
+      map((resp: AxiosResponse<User>) => resp.data)
     );
   }
 
 
   /** POST /api/login */
-  login(payload: LoginPayload): Observable<ApiResponse<unknown>> {
+  login(payload: LoginPayload): Observable<User> {
     const fd = new FormData();
     Object.entries(payload).forEach(([k, v]) => v != null && fd.append(k, v as string | Blob));
 
     /* 1️⃣  Ensure CSRF cookie, then 2️⃣  run the real request */
     return this.csrf.init().pipe(
       switchMap(() =>
-        from(this.http.post<ApiResponse<unknown>>('/api/login', fd))
+        from(this.http.post<User>('/api/login', fd))
       ),
-      map((resp: AxiosResponse<ApiResponse<unknown>>) => resp.data)
+      map((resp: AxiosResponse<User>) => {
+        console.log(resp.data);
+        return resp.data;
+      })
     );
   }
 
-  /* Same pattern for login, logout, etc. */
+  /** POST /api/login */
+  logout(): Observable<""> {
+
+    /* 1️⃣  Ensure CSRF cookie, then 2️⃣  run the real request */
+    return this.csrf.init().pipe(
+      switchMap(() =>
+        from(this.http.post<"">('/api/logout'))
+      ),
+      map((resp: AxiosResponse<"">) => {
+        console.log(resp);
+        return "";
+      })
+    );
+  }
+
 }
