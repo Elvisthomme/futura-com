@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { SalesDashboardComponent } from './sales-dashboard/sales-dashboard.component';
 import { sharedModule } from 'src/app/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,6 @@ import { sharedModule } from 'src/app/shared/shared.module';
     AdminDashboardComponent,
     SalesDashboardComponent,
   ],
-  imports: [CommonModule, DashboardRoutingModule, sharedModule],
+  imports: [CommonModule, DashboardRoutingModule, sharedModule, TranslateModule],
 })
 export class DashboardModule {}

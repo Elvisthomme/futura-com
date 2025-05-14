@@ -1,11 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
   ApexAxisChartSeries,
   ApexChart,
-  ChartComponent,
   ApexDataLabels,
   ApexPlotOptions,
   ApexYAxis,
@@ -13,39 +15,32 @@ import {
   ApexResponsive,
   ApexLegend,
   ApexFill,
+  ChartComponent,
 } from 'ng-apexcharts';
-import { apiResultFormat } from 'src/app/core/core.index';
+import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
+
 import { routes } from 'src/app/core/helpers/routes';
 import { CommonService } from 'src/app/core/service/common/common.service';
 import { DataService } from 'src/app/core/service/data/data.service';
 import { SettingsService } from 'src/app/core/service/settings/settings.service';
-import { expiredproduct } from 'src/app/shared/model/page.model';
 import {
-  PaginationService,
-  pageSelection,
-  tablePageSize,
-} from 'src/app/shared/shared.index';
-import Swal from 'sweetalert2';
+  DashboardMetrics,
+} from 'src/app/core/service/dashboard/dashboard.service';
+import { DashboardService } from 'src/app/core/service/dashboard/dashboard.service';
+import { Product } from 'src/app/core/core.index';
+
 export type ChartOptions = {
-  series: ApexAxisChartSeries | any;
-
-  chart: ApexChart | any;
-
-  responsive: ApexResponsive | any;
-
-  colors: any;
-
-  dataLabels: ApexDataLabels | any;
-
-  plotOptions: ApexPlotOptions | any;
-
-  yaxis: ApexYAxis | any;
-
-  xaxis: ApexXAxis | any;
-
-  legend: ApexLegend | any;
-
-  fill: ApexFill | any;
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  colors: string[];
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  yaxis: ApexYAxis;
+  xaxis: ApexXAxis;
+  legend: ApexLegend;
+  fill: ApexFill;
 };
 
 @Component({
@@ -53,137 +48,160 @@ export type ChartOptions = {
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
-export class AdminDashboardComponent {
-  initChecked = false;
-  public routes = routes;
-  public currency!: string;
+export class AdminDashboardComponent implements OnInit {
+  /* ─────────────────────────────────────── Widgets & chart ────────────────── */
+  public dashboardMetrics: DashboardMetrics = this.dashboard.dashboardMetricsData();
+  public currency: string = "";
+  public countUpOptions = { duration: 1.6 };
+
+  years: number[] = [];
+  selectedYear: number = new Date().getFullYear();
+
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions: Partial<ChartOptions>;
+  public chartOptions: Partial<ChartOptions> = {
+    /* baseline; will be updated in prepareChart() */
+    series: [],
+    colors: ['#28C76F', '#EA5455'],
+    chart: {
+      type: 'bar',
+      height: 320,
+      stacked: true,
+      zoom: { enabled: true },
+    },
+    responsive: [
+      {
+        breakpoint: 280,
+        options: {
+          legend: { position: 'bottom', offsetY: 0 },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        borderRadius: 4,
+        borderRadiusApplication: 'end',
+        borderRadiusWhenStacked: 'all',
+        columnWidth: '20%',
+      },
+    },
+    dataLabels: { enabled: false },
+    yaxis: {
+      min: -200,
+      max: 300,
+      tickAmount: 5,
+    },
+    xaxis: {
+      categories: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
+    },
+    legend: { show: false },
+    fill: { opacity: 1 },
+  };
+
+  /* ─────────────────────────────────────── Table / pagination ─────────────── */
+  public expiredProducts: (Product & { is_selected?: boolean })[] = this.dashboard.dashboardMetricsData().recently_expired_products;
+  showFilter = false;
+  dataSource!: MatTableDataSource<(Product & { is_selected?: boolean })>;
+  public searchDataValue = '';
+  initChecked = false;
+
+  /* Helpers */
+  public routes = routes;
 
   constructor(
     private common: CommonService,
     private setting: SettingsService,
     private data: DataService,
-    private pagination: PaginationService,
-    private router: Router
+    private router: Router,
+    private dashboard: DashboardService,
+    private translate: TranslateService
   ) {
+  }
+
+  /* ────────────────────────────────────────── Init ────────────────────────── */
+  ngOnInit(): void {
+    /* currency observable */
+    this.common.currency$.subscribe((res) => (this.currency = res));
+
+    /* fetch dashboard API payload */
+    this.fetchMetrics();
+
+  }
+
+  /* ───────────────────────────── Dashboard payload ────────────────────────── */
+  private fetchMetrics(): void {
+    this.dashboard.getDashboardMetrics().subscribe(() => {
+
+      this.prepareYearData();
+      this.prepareChart();
+
+      this.dataSource = new MatTableDataSource<(Product & { is_selected?: boolean })>(this.expiredProducts);
+
+    });
+  }
+
+  private prepareYearData(): void {
+    this.years = Object.keys(this.dashboardMetrics.sales)
+      .map(Number)
+      .sort((a, b) => b - a);
+    this.selectedYear = this.years[0];
+  }
+
+  private prepareChart(): void {
+    const sales = Object.values(
+      this.dashboardMetrics.sales[this.selectedYear]
+    ).map((v) => this.toNumber(v));
+
+    const purchases = Object.values(
+      this.dashboardMetrics.purchases[this.selectedYear]
+    ).map((v) => -this.toNumber(v));
+
     this.chartOptions = {
+      ...this.chartOptions,
       series: [
         {
-          name: 'Sales',
-          data: [130, 210, 300, 290, 150, 50, 210, 280, 105],
+          name: this.translate.instant('dashboard.sales'),
+          data: sales,
         },
         {
-          name: 'Purchase',
-          data: [-150, -90, -50, -180, -50, -70, -100, -90, -105],
+          name: this.translate.instant('dashboard.purchase'),
+          data: purchases,
         },
       ],
-      colors: ['#28C76F', '#EA5455'],
-      chart: {
-        type: 'bar',
-        height: 320,
-        stacked: true,
-
-        zoom: {
-          enabled: true,
-        },
-      },
-      responsive: [
-        {
-          breakpoint: 280,
-          options: {
-            legend: {
-              position: 'bottom',
-              offsetY: 0,
-            },
-          },
-        },
-      ],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          borderRadius: 4,
-          borderRadiusApplication: 'end',
-          borderRadiusWhenStacked: 'all',
-          columnWidth: '20%',
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      yaxis: {
-        min: -200,
-        max: 300,
-        tickAmount: 5,
-      },
-      xaxis: {
-        categories: [
-          ' Jan ',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-        ],
-      },
-      legend: { show: false },
-      fill: {
-        opacity: 1,
-      },
     };
-    this.common.currency$.subscribe((res: string) => {
-      this.currency = res;
-    });
-    this.data.getDataTable().subscribe((apiRes: apiResultFormat) => {
-      this.totalData = apiRes.totalData;
-      this.pagination.tablePageSize.subscribe((res: tablePageSize) => {
-        if (this.router.url == this.routes.adminDashboard) {
-          this.getTableData({ skip: res.skip, limit: this.totalData });
-          this.pageSize = res.pageSize;
-        }
-      });
-    });
-  }
-  // pagination variables
-  public tableData: Array<expiredproduct> = [];
-  public pageSize = 10;
-  public serialNumberArray: Array<number> = [];
-  public totalData = 0;
-  showFilter = false;
-  dataSource!: MatTableDataSource<expiredproduct>;
-  public searchDataValue = '';
-  //** / pagination variables
-
-  private getTableData(pageOption: pageSelection): void {
-    this.data.getExpiredProduct().subscribe((apiRes: apiResultFormat) => {
-      this.tableData = [];
-      this.serialNumberArray = [];
-      this.totalData = apiRes.totalData;
-      apiRes.data.map((res: expiredproduct, index: number) => {
-        const serialNumber = index + 1;
-        if (index >= pageOption.skip && serialNumber <= pageOption.limit) {
-          res.sNo = serialNumber;
-          this.tableData.push(res);
-          this.serialNumberArray.push(serialNumber);
-        }
-      });
-      this.dataSource = new MatTableDataSource<expiredproduct>(this.tableData);
-      this.pagination.calculatePageSize.next({
-        totalData: this.totalData,
-        pageSize: this.pageSize,
-        tableData: this.tableData,
-        serialNumberArray: this.serialNumberArray,
-      });
-    });
   }
 
-  confirmColor() {
+  changeYear(year: number): void {
+    if (year !== this.selectedYear) {
+      this.selectedYear = year;
+      this.prepareChart();
+    }
+  }
+
+  /* ─────────────────────────────── Count-up util ─────────────────────────── */
+  toNumber(value: string | number | null | undefined): number {
+    return Number(value) || 0;
+  }
+
+
+  /* ─────────────────────────────────── SweetAlert ─────────────────────────── */
+  confirmColor(): void {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: ' btn btn-success',
+        confirmButton: 'btn btn-success',
         cancelButton: 'me-2 btn btn-danger',
       },
       buttonsStyling: false,
@@ -191,38 +209,36 @@ export class AdminDashboardComponent {
 
     swalWithBootstrapButtons
       .fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        confirmButtonText: 'Yes, delete it!',
+        title: this.translate.instant('dashboard.areYouSure'),
+        text: this.translate.instant('dashboard.cannotRevert'),
+        confirmButtonText: this.translate.instant('dashboard.yesDelete'),
         showCancelButton: true,
-        cancelButtonText: 'Cancel',
+        cancelButtonText: this.translate.instant('dashboard.cancel'),
         reverseButtons: true,
       })
       .then((result) => {
         if (result.isConfirmed) {
           swalWithBootstrapButtons.fire(
-            'Deleted!',
-            'Your file has been deleted.',
+            this.translate.instant('dashboard.deleted'),
+            this.translate.instant('dashboard.fileDeleted'),
             'success'
           );
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'Your imaginary file is safe :)',
+            this.translate.instant('dashboard.cancelled'),
+            this.translate.instant('dashboard.fileSafe'),
             'error'
           );
         }
       });
   }
-  selectAll(initChecked: boolean) {
+
+  /* select / deselect all rows */
+  selectAll(initChecked: boolean): void {
     if (!initChecked) {
-      this.tableData.forEach((f) => {
-        f.isSelected = true;
-      });
+      this.expiredProducts.forEach((f) => (f.is_selected = true));
     } else {
-      this.tableData.forEach((f) => {
-        f.isSelected = false;
-      });
+      this.expiredProducts.forEach((f) => (f.is_selected = false));
     }
   }
 }
