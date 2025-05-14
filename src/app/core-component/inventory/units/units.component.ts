@@ -1,13 +1,20 @@
-import { Component } from '@angular/core';
+import { GlobalStore } from 'src/app/store/app.store';
+import { Component, effect, inject, OnInit, ViewChild } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import { SidebarService, apiResultFormat } from 'src/app/core/core.index';
+import { NavigationEnd, Router } from '@angular/router';
+import { SidebarService, SpinnerService, Unit, apiResultFormat } from 'src/app/core/core.index';
 import { routes } from 'src/app/core/helpers/routes';
 import { DataService } from 'src/app/core/service/data/data.service';
 import { unit } from 'src/app/shared/model/page.model';
 import { PaginationService, pageSelection, tablePageSize } from 'src/app/shared/shared.index';
 import Swal from 'sweetalert2';
+import { Pagination } from 'src/app/store/rest.store';
+import { UnitFormComponent } from './unit-form/unit-form.component';
+import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { FormGroup } from '@angular/forms';
+
 interface data {
   value: string;
 }
@@ -17,16 +24,16 @@ interface data {
   templateUrl: './units.component.html',
   styleUrl: './units.component.scss'
 })
-export class UnitsComponent {
-  initChecked = false;
+export class UnitsComponent implements OnInit {
   public selectedValue1 = '';
   public selectedValue2 = '';
   public selectedValue3 = '';
   public routes = routes;
+  @ViewChild(UnitFormComponent) unitForm!: UnitFormComponent;
 
- 
 
-  public cartValue = [4,4];
+
+  public cartValue = [4, 4];
 
   public addPos(i: number): void {
     this.cartValue[i]++;
@@ -37,71 +44,41 @@ export class UnitsComponent {
 
 
   // pagination variables
-  public tableData: Array<unit> = [];
-  public pageSize = 10;
-  public serialNumberArray: Array<number> = [];
-  public totalData = 0;
+  units = this.globalStore.units
+  private readonly messageService = inject(MessageService);
+  private readonly translate = inject(TranslateService);
+
   showFilter = false;
-  dataSource!: MatTableDataSource<unit>;
+  dataSource = new MatTableDataSource<Unit>();
   public searchDataValue = '';
   //** / pagination variables
-
   constructor(
-    private data: DataService,
-    private pagination: PaginationService,
-    private router: Router,
-    private sidebar: SidebarService
+    private sidebar: SidebarService,
+    private globalStore: GlobalStore,
+    private spinner: SpinnerService
   ) {
-    this.data.getDataTable().subscribe((apiRes: apiResultFormat) => {
-      this.totalData = apiRes.totalData;
-      this.pagination.tablePageSize.subscribe((res: tablePageSize) => {
-        if (this.router.url == this.routes.units) {
-          this.getTableData({ skip: res.skip, limit: this.totalData  });
-          this.pageSize = res.pageSize;
-        }
-      });
+  }
+  ngOnInit(): void {
+    // kick-off the first fetch – after that everything is reactive
+    this.loaadUnits();
+    effect(() => {
+      this.dataSource.data = this.units.items();  // always fresh
     });
+
   }
 
-  private getTableData(pageOption: pageSelection): void {
-    this.data.getUnit().subscribe((apiRes: apiResultFormat) => {
-      this.tableData = [];
-      this.serialNumberArray = [];
-      this.totalData = apiRes.totalData;
-      apiRes.data.map((res: unit, index: number) => {
-        const serialNumber = index + 1;
-        if (index >= pageOption.skip && serialNumber <= pageOption.limit) {
-          res.sNo = serialNumber;
-          this.tableData.push(res);
-          this.serialNumberArray.push(serialNumber);
-        }
-      });
-      this.dataSource = new MatTableDataSource<unit>(this.tableData);
-      this.pagination.calculatePageSize.next({
-        totalData: this.totalData,
-        pageSize: this.pageSize,
-        tableData: this.tableData,
-        serialNumberArray: this.serialNumberArray,
-      });
-    });
-  }
+  loaadUnits() {
 
+    this.spinner.show();
+    this.units.list().subscribe();
+  }
+  initChecked = false;
   public sortData(sort: Sort) {
-    const data = this.tableData.slice();
-    if (!sort.active || sort.direction === '') {
-      this.tableData = data;
-    } else {
-      this.tableData = data.sort((a, b) => {
-        const aValue = (a as never)[sort.active];
-        const bValue = (b as never)[sort.active];
-        return (aValue < bValue ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
-      });
-    }
+    this.units.sortItems(sort)
   }
 
-  public searchData(value: string): void {
+  searchData(value: string) {
     this.dataSource.filter = value.trim().toLowerCase();
-    this.tableData = this.dataSource.filteredData;
   }
 
   selectedList3: data[] = [
@@ -165,13 +142,39 @@ export class UnitsComponent {
   }
   selectAll(initChecked: boolean) {
     if (!initChecked) {
-      this.tableData.forEach((f) => {
-        f.isSelected = true;
+      this.units.items().forEach((f) => {
+        f.is_selected = true;
       });
     } else {
-      this.tableData.forEach((f) => {
-        f.isSelected = false;
+      this.units.items().forEach((f) => {
+        f.is_selected = false;
       });
     }
+  }
+
+
+  addNewUnit() {
+    this.units.edit(null);
+  }
+
+  editUnit(unit: Unit) {
+    this.units.edit(unit)
+    this.unitForm.reloadForm()
+  }
+
+  showSavedSucessMsg() {
+    this.messageService.add({
+      summary: this.translate.instant('unitForm.successTitle'),
+      detail: this.translate.instant('unitForm.successMessage'),
+      styleClass: 'success-light-popover',
+    });
+  }
+
+  showSaveFailMsg() {
+    this.messageService.add({
+      summary: this.translate.instant('unitForm.failTitle'),
+      detail: this.translate.instant('unitForm.failMessage'),
+      styleClass: 'danger-light-popover',
+    });
   }
 }

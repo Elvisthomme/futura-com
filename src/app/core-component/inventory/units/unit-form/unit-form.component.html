@@ -1,0 +1,63 @@
+<div class="modal fade" id="add-units">
+  <div class="modal-dialog modal-dialog-centered custom-modal-two">
+    <div class="modal-content">
+      <div class="page-wrapper-new p-0">
+        <div class="content">
+          <div class="modal-header border-0 custom-modal-header">
+            <div class="page-title">
+              <h4 class="modal-title">{{ units.editItem() ? ('unitForm.editTitle' | translate) : ('unitForm.createTitle' | translate) }}</h4>
+            </div>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body custom-modal-body">
+            <form [formGroup]="unitForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label class="form-label">{{ 'unitForm.nameLabel' | translate }}</label>
+                <input type="text" class="form-control" formControlName="name" [class.is-invalid]="invalid('name')"
+                  [class.is-valid]="valid('name')">
+                <!-- client side -->
+                <div *ngIf="isRequiredError('name')" class="invalid-feedback">
+                  {{ 'unitForm.nameRequired' | translate }}
+                </div>
+                <!-- server side -->
+                <div *ngIf="f.name?.errors?.['server']" class="invalid-feedback">
+                  {{ f.name.errors!['server'] }}
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">{{ 'unitForm.shortNameLabel' | translate }}</label>
+                <input type="text" class="form-control" formControlName="short_name"
+                  [class.is-invalid]="invalid('short_name')" [class.is-valid]="valid('short_name')">
+                <!-- client side -->
+                <div *ngIf="isRequiredError('short_name')" class="invalid-feedback">
+                  {{ 'unitForm.shortNameRequired' | translate }}
+                </div>
+                <!-- server side -->
+                <div *ngIf="f.short_name?.errors?.['server']" class="invalid-feedback">
+                  {{ f.short_name.errors!['server'] }}
+                </div>
+              </div>
+              <div class="mb-0">
+                <div class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                  <span class="status-label">{{ 'unitForm.statusLabel' | translate }}</span>
+                  <input type="checkbox" id="user2" class="check" checked="" formControlName="status">
+                  <label for="user2" class="checktoggle"></label>
+                </div>
+              </div>
+              <div class="modal-footer-btn">
+                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">{{ 'unitForm.cancelButton' | translate }}</button>
+                <button type="submit" class="btn btn-submit" [disabled]="unitForm.pending">
+                  <span *ngIf="!unitForm.pending"> {{ units.editItem() ? ('unitForm.saveChangesButton' | translate) : ('unitForm.createButton' | translate) }}</span>
+                  <span *ngIf="unitForm.pending" class="spinner-border spinner-border-sm"></span>
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
