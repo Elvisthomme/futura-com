@@ -19,7 +19,6 @@ import { EmailVerification3Component } from './email-verification/email-verifica
 import { TwoStepVerificationComponent } from './two-step-verification/two-step-verification/two-step-verification.component';
 import { TwoStepVerification2Component } from './two-step-verification/two-step-verification-2/two-step-verification-2.component';
 import { TwoStepVerification3Component } from './two-step-verification/two-step-verification-3/two-step-verification-3.component';
-import { SigninComponent } from './signin/signin/signin.component';
 import { Signin2Component } from './signin/signin-2/signin-2.component';
 import { Signin3Component } from './signin/signin-3/signin-3.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password/forgot-password.component';
@@ -46,7 +45,6 @@ import { ForgotPassword3Component } from './forgot-password/forgot-password-3/fo
     TwoStepVerificationComponent,
     TwoStepVerification2Component,
     TwoStepVerification3Component,
-    SigninComponent,
     Signin2Component,
     Signin3Component,
     ForgotPasswordComponent,
@@ -56,7 +54,7 @@ import { ForgotPassword3Component } from './forgot-password/forgot-password-3/fo
   imports: [
     CommonModule,
     AuthRoutingModule,
-    sharedModule
+    sharedModule,
   ]
 })
 export class AuthModule { }

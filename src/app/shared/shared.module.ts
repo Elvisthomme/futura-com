@@ -27,7 +27,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { LightgalleryModule } from 'lightgallery/angular'; 
+import { LightgalleryModule } from 'lightgallery/angular';
 import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { CountUpModule } from 'ngx-countup';
 import { TimepickerActions, TimepickerModule } from 'ngx-bootstrap/timepicker';
@@ -69,7 +69,7 @@ const icons = {
         CountUpModule,
         TimepickerModule,
         FeatherModule
-    ], imports: [FeatherIconModule,
+], imports: [FeatherIconModule,
         MaterialModule,
         NgApexchartsModule,
         FormsModule,

@@ -1,17 +1,16 @@
+import { GlobalStore } from 'src/app/store/app.store';
 import { Component } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
   DataService,
-  pageSelection,
-  apiResultFormat,
   routes,
   SidebarService,
+  Product,
 } from 'src/app/core/core.index';
-import { productList } from 'src/app/shared/model/page.model';
-import { PaginationService, tablePageSize } from 'src/app/shared/shared.index';
 import Swal from 'sweetalert2';
+import { Pagination } from 'src/app/store/rest.store';
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
@@ -48,52 +47,27 @@ export class ProductListComponent {
 
   public routes = routes;
   // pagination variables
-  public tableData: Array<productList> = [];
+  public tableData: (Product & { is_selected?: boolean })[] = this.globalStore.products.items();
   public pageSize = 10;
-  public serialNumberArray: Array<number> = [];
-  public totalData = 0;
+  public totalData: number = this.globalStore.products.count();
   showFilter = false;
-  dataSource!: MatTableDataSource<productList>;
+  dataSource!: MatTableDataSource<(Product & { is_selected?: boolean })>;
   public searchDataValue = '';
   //** / pagination variables
 
+  pagination: Pagination | null = this.globalStore.products.pageInfo();
   constructor(
     private data: DataService,
-    private pagination: PaginationService,
     private router: Router,
     private sidebar: SidebarService,
+    private globalStore: GlobalStore
   ) {
-    this.data.getDataTable().subscribe((apiRes: apiResultFormat) => {
-      this.totalData = apiRes.totalData;
-      this.pagination.tablePageSize.subscribe((res: tablePageSize) => {
-        if (this.router.url == this.routes.productList) {
-          this.getTableData({ skip: res.skip, limit: this.totalData  });
-          this.pageSize = res.pageSize;
-        }
-      });
-    });
+    this.getTableData()
   }
 
-  private getTableData(pageOption: pageSelection): void {
-    this.data.getProductList().subscribe((apiRes: apiResultFormat) => {
-      this.tableData = [];
-      this.serialNumberArray = [];
-      this.totalData = apiRes.totalData;
-      apiRes.data.map((res: productList, index: number) => {
-        const serialNumber = index + 1;
-        if (index >= pageOption.skip && serialNumber <= pageOption.limit) {
-          res.sNo = serialNumber;
-          this.tableData.push(res);
-          this.serialNumberArray.push(serialNumber);
-        }
-      });
-      this.dataSource = new MatTableDataSource<productList>(this.tableData);
-      this.pagination.calculatePageSize.next({
-        totalData: this.totalData,
-        pageSize: this.pageSize,
-        tableData: this.tableData,
-        serialNumberArray: this.serialNumberArray,
-      });
+  private getTableData(): void {
+    this.globalStore.products.list().subscribe(() => {
+      this.dataSource = new MatTableDataSource<(Product & { is_selected?: boolean })>(this.tableData);
     });
   }
 
@@ -131,7 +105,7 @@ export class ProductListComponent {
       },
       buttonsStyling: false
     })
-    
+
     swalWithBootstrapButtons.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -160,13 +134,13 @@ export class ProductListComponent {
   selectAll(initChecked: boolean) {
     if (!initChecked) {
       this.tableData.forEach((f) => {
-        f.isSelected = true;
+        f.is_selected = true;
       });
     } else {
       this.tableData.forEach((f) => {
-        f.isSelected = false;
+        f.is_selected = false;
       });
     }
   }
- 
+
 }

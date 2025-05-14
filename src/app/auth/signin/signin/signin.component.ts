@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
   FormControl,
   Validators,
-  FormGroup
+  FormGroup,
+  ReactiveFormsModule
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { routes } from 'src/app/core/helpers/routes';
 import { AuthService, LoginPayload } from 'src/app/core/service/auth/auth.service';
 import { WebstorgeService } from 'src/app/shared/webstorge.service';
@@ -12,12 +15,17 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-signin',
+  standalone: true,
   templateUrl: './signin.component.html',
-  styleUrl: './signin.component.scss'
+  styleUrl: './signin.component.scss',
+  imports: [
+    CommonModule, ReactiveFormsModule, RouterModule, TranslateModule
+  ]
 })
 export class SigninComponent {
   private auth = inject(AuthService);
-    private webstorge = inject(WebstorgeService);
+  private webstorge = inject(WebstorgeService);
+  private translate = inject(TranslateService);
 
   /** page routes for template */
   routes = routes;
@@ -100,17 +108,20 @@ export class SigninComponent {
         if (error.status == 401) {
 
           swalWithBootstrapButtons.fire(
-            'Error!',
-            $localize`Invalid credentials`,
+            this.translate.instant('error'),
+            this.translate.instant('invalidCredentials'),
             'error'
           )
+
         } else {
 
+
           swalWithBootstrapButtons.fire(
-            'Error!',
-            $localize`Unknow error`,
+            this.translate.instant('error'),
+            this.translate.instant('unknowError'),
             'error'
           )
+
         }
       }
     });

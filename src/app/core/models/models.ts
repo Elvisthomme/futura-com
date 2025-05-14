@@ -25,6 +25,11 @@ export const createDefaultUser = (): User => ({
 /* -------------------------------- Core helpers ----------------------------- */
 export type Id = number | string;
 
+export interface ApiError {
+  message: string;
+  errors?: Record<string, string[]>;
+}
+
 export interface BaseEntity {
   id: Id;
   created_at: string;             // ISO date-time
@@ -221,8 +226,15 @@ export interface Product extends BaseEntity {
   expire_on?: string | null;
   warehouse_id?: Id | null;
   store_id?: Id | null;
-  created_by?: Id | null;
-  image_url?: string | null;        // comes from accessor
+  created_by_id?: Id | null;
+  image_url?: string | null;
+  company: Company;
+  category: Category;
+  sub_category: Category;
+  brand:Brand;
+  unit: Unit;
+  images: ProductImage;
+  created_by: User;
 }
 
 /* ----------------------------- Product Image -------------------------------*/

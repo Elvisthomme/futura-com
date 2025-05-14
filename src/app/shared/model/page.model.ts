@@ -485,13 +485,13 @@ export interface categoryList {
   isSelected?: boolean;
 }
 export interface expiredproduct {
-  sNo: number;
-  product: string;
-  sku: string;
-  manufacturedDate: string;
-  expiredDate: string;
-  img: string;
-  isSelected?: boolean;
+  id: number;
+  name: string;
+  SKU: string;
+  manufactured_date: string;
+  expire_on: string;
+  image_url: string;
+  is_selected?: boolean;
 }
 export interface unit {
   sNo: number;

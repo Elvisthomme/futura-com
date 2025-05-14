@@ -7,10 +7,20 @@ import { environment } from 'src/environments/environment';
 import { CsrfService } from '../core/service/csrf/csrf.service';
 import { attachAuthExpiredInterceptor } from '../core/interceptors/axios-auth-expired.interceptor';
 import { WebstorgeService } from '../shared/webstorge.service';
+import { Sort } from '@angular/material/sort';
 
 /** ----------  Types that match Laravel's default API shape ---------- */
 export interface PaginatedResponse<T> {
   data: T[];
+  links: Record<string, string | null>;
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+}
+export interface Pagination {
   links: Record<string, string | null>;
   meta: {
     current_page: number;
@@ -55,13 +65,15 @@ export class RestStoreFactory {
     /* ----------------------------------------------------------------
      * 1️⃣  Signals — the reactive state everyone in your app consumes
      * ---------------------------------------------------------------*/
-    const _items = signal<T[]>([]);
+    const _items = signal<(T & { is_selected?: boolean })[]>([]);
     const _selectedItem = signal<T | null>(null);
-    const _pagination = signal<Omit<PaginatedResponse<T>, 'data'> | null>(null);
+    const _editItem = signal<T | null>(null);
+    const _pagination = signal<Pagination | null>(null);
 
     /* derived helpers */
     const items = computed(() => _items());
     const selectedItem = computed(() => _selectedItem());
+    const editItem = computed(() => _editItem());
     const count = computed(() => _items().length);
     const pageInfo = computed(() => _pagination());
 
@@ -130,6 +142,16 @@ export class RestStoreFactory {
         })
       );
 
+    const sortItems = (sort: Sort) => {
+      const data = _items().slice();
+      if (!(!sort.active || sort.direction === '')) {
+        _items.set(data.sort((a, b) => {
+          const aValue = (a as never)[sort.active];
+          const bValue = (b as never)[sort.active];
+          return (aValue < bValue ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
+        }));
+      }
+    }
     const create = (payload: Partial<T>) =>
       write<T>('post', '', payload).pipe(
         map(resp => {
@@ -148,14 +170,17 @@ export class RestStoreFactory {
         })
       );
 
-    const select = (item: T) => {
-      _selectedItem.set(item);
-      write<T>('patch', `/${item.id}`).pipe(
-        map(resp => {
-          return resp;
-        })
-      )
-    };
+      const select = (item: T) => {
+        _selectedItem.set(item);
+        write<T>('patch', `/${item.id}`).pipe(
+          map(resp => {
+            return resp;
+          })
+        )
+      };
+      const edit = (item: T|null) => {
+        _editItem.set(item);
+      };
 
     const destroy = (id: Id) =>
       write<null>('delete', `/${id}`).pipe(
@@ -163,6 +188,6 @@ export class RestStoreFactory {
       );
 
     /* Everything the rest of the app needs */
-    return { selectedItem, items, count, pageInfo, list, find, create, update, destroy, select };
+    return { selectedItem,editItem, items, count, pageInfo, sortItems, list, find, create, update, destroy, select,edit };
   }
 }

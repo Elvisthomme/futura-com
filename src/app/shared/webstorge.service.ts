@@ -9,6 +9,12 @@ import { routes } from '../core/helpers/routes';
 export class WebstorgeService {
   private router = inject(Router);
 
+  getDefaultLang(): string {
+    return localStorage.getItem('lang') || 'en';
+  }
+  setDefaultLang(lang: 'en'|'fr'): void {
+    localStorage.setItem('lang', lang);
+  }
   public login(): void {
     localStorage.setItem('authenticated', 'true');
     this.router.navigate([routes.dashboard]);

@@ -10,7 +10,10 @@ import { BrandListComponent } from './brand-list/brand-list.component';
 import { UnitsComponent } from './units/units.component';
 import { VarriantAttributesComponent } from './varriant-attributes/varriant-attributes.component';
 import { QrcodeComponent } from './qrcode/qrcode.component';
-
+import { UnitFormComponent } from './units/unit-form/unit-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { MessageService } from 'primeng/api';
 
 
 
@@ -20,6 +23,7 @@ import { QrcodeComponent } from './qrcode/qrcode.component';
     BarcodeComponent,
     WarrantyComponent,
     BrandListComponent,
+    UnitFormComponent,
     UnitsComponent,
     VarriantAttributesComponent,
     QrcodeComponent
@@ -28,6 +32,10 @@ import { QrcodeComponent } from './qrcode/qrcode.component';
     CommonModule,
     InventoryRoutingModule,
     sharedModule,
-  ]
+    ReactiveFormsModule,
+    TranslateModule
+  ],
+  providers: [MessageService],
+
 })
 export class InventoryModule { }

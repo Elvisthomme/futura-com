@@ -7,7 +7,13 @@ import { AuthService } from 'src/app/core/service/auth/auth.service';
 import Swal from 'sweetalert2';
 import { GlobalStore } from 'src/app/store/app.store';
 import { DashboardService } from 'src/app/core/service/dashboard/dashboard.service';
+import { TranslateService } from '@ngx-translate/core';
 
+interface Language {
+  code: 'en'|'fr';
+  label: string;
+  flag: string;
+}
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -29,8 +35,14 @@ export class HeaderComponent {
   last = '';
 
 
+  languages: Language[] = [
+    { code: 'en', label: 'English', flag: "assets/img/flags/us.png" },
+    { code: 'fr', label: 'Français', flag: "assets/img/flags/fr.png" },
+  ];
+  selectedLanguage: Language = this.webStorage.getDefaultLang() === 'fr' ? this.languages[1] : this.languages[0];
+
   get userName(): string {
-    return this.dashboard.data().user.username;
+    return this.dashboard.headerData().user.username;
   }
   get stores(): Store[] {
     return this.globalStore.stores.items();
@@ -39,13 +51,13 @@ export class HeaderComponent {
     return this.globalStore.stores.selectedItem();
   }
   get notificationCount(): number | null {
-    return this.dashboard.data().notification_count;
+    return this.dashboard.headerData().notification_count;
   }
   get messageCount(): number | null {
-    return this.dashboard.data().message_count;
+    return this.dashboard.headerData().message_count;
   }
   get userImage(): string | null | undefined {
-    return this.dashboard.data().user.image_url;
+    return this.dashboard.headerData().user.image_url;
   }
   get userStoreRole(): string | null | undefined {
     return "Super Admin";
@@ -54,6 +66,18 @@ export class HeaderComponent {
   selectStore(store: Store) {
     this.globalStore.stores.select(store)
   }
+  selectLanguage(event:Event, language: Language): void {
+
+    event.preventDefault();
+    if (this.selectedLanguage.code !== language.code) {
+      this.webStorage.setDefaultLang(language.code);
+      this.selectedLanguage = language;
+      this.translateService.use(language.code);
+    }
+    const currentLanguage = this.translateService.currentLang;
+    console.log('currentLanguage', currentLanguage);
+  }
+
   constructor(
     private Router: Router,
     private common: CommonService,
@@ -61,7 +85,8 @@ export class HeaderComponent {
     private webStorage: WebstorgeService,
     private auth: AuthService,
     private globalStore: GlobalStore,
-    private dashboard: DashboardService
+    private dashboard: DashboardService,
+    private translateService: TranslateService
   ) {
     dashboard.getHeader().subscribe({
       next: () => {
@@ -77,11 +102,10 @@ export class HeaderComponent {
         })
 
         swalWithBootstrapButtons.fire(
-          'Error!',
-          $localize`Failed to load user infos`,
+          this.translateService.instant('error'),
+          this.translateService.instant('failedToLoadUserInfos'),
           'error'
         )
-
       }
     })
     globalStore.stores.list().subscribe({
@@ -98,8 +122,8 @@ export class HeaderComponent {
         })
 
         swalWithBootstrapButtons.fire(
-          'Error!',
-          $localize`Failed to load stores`,
+          this.translateService.instant('error'),
+          this.translateService.instant('failedToLogout'),
           'error'
         )
 
@@ -168,13 +192,15 @@ export class HeaderComponent {
           },
           buttonsStyling: false
         })
-
-
-        swalWithBootstrapButtons.fire(
-          'Error!',
-          $localize`Failed to logout`,
-          'error'
-        )
+        this.translateService
+          .get(['failedToLogout', 'error'])
+          .subscribe((translations: { [key: string]: string }) => {
+            swalWithBootstrapButtons.fire(
+              translations['error'],
+              translations['failedToLogout'],
+              'error'
+            );
+          });
 
       }
     });

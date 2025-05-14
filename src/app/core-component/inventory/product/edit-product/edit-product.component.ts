@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { SidebarService, routes } from 'src/app/core/core.index';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Product, SidebarService, routes } from 'src/app/core/core.index';
+import { GlobalStore } from 'src/app/store/app.store';
 interface data {
   value: string;
 }
@@ -8,7 +10,7 @@ interface data {
   templateUrl: './edit-product.component.html',
   styleUrl: './edit-product.component.scss',
 })
-export class EditProductComponent {
+export class EditProductComponent implements OnInit {
   public routes = routes
   public selectedValue1 = '';
   public selectedValue2 = '';
@@ -92,4 +94,36 @@ export class EditProductComponent {
     this.sidebar.toggleCollapse();
     this.isCollapsed = !this.isCollapsed;
   }
+
+
+    id!: number;
+    readonly globalStore = inject(GlobalStore);
+    readonly route = inject(ActivatedRoute);
+    readonly router = inject(Router);
+    product: Product | null = null;
+    ngOnInit() {
+      const idParam = this.route.snapshot.paramMap.get('id');
+      this.id = idParam ? +idParam : NaN;
+
+      if (isNaN(this.id)) {
+        this.router.navigate([routes.error404]);
+        return;
+      }
+
+      this.route.paramMap.subscribe(params => {
+        const param = params.get('id');
+        this.id = param ? +param : NaN;
+        if (!isNaN(this.id)) {
+          this.globalStore.products.find(this.id).subscribe((res) => {
+            if (res) {
+              this.product = res;
+            } else {
+              this.router.navigate([routes.error404]);
+            }
+          });
+        } else {
+          this.router.navigate([routes.error404]);
+        }
+      });
+    }
 }

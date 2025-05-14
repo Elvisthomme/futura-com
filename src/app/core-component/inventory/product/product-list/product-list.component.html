@@ -177,16 +177,16 @@
               <tr>
                 <td>
                   <label class="checkboxs">
-                    <input type="checkbox" [(ngModel)]="data.isSelected">
+                    <input type="checkbox" [(ngModel)]="data.is_selected">
                     <span class="checkmarks"></span>
                   </label>
                 </td>
                 <td>
                   <div class="productimgname">
                     <a href="javascript:void(0);" class="product-img stock-img">
-                      <img [src]="data.img1" alt="product">
+                      <img [src]="data.image_url" alt="product">
                     </a>
-                    <a href="javascript:void(0);">{{data.product}} </a>
+                    <a href="javascript:void(0);">{{data.name}} </a>
                   </div>
                 </td>
                 <td>{{data.SKU}} </td>
@@ -194,21 +194,21 @@
                 <td>{{data.brand}}</td>
                 <td>{{data.price}}</td>
                 <td>{{data.unit}}</td>
-                <td>{{data.qty}}</td>
+                <td>{{data.quantity}}</td>
                 <td>
                   <div class="userimgname">
                     <a href="javascript:void(0);" class="product-img">
-                      <img [src]="data.img2" alt="product">
+                      <img [src]="data.created_by.image_url" alt="product">
                     </a>
-                    <a href="javascript:void(0);">{{data.createdBy}}</a>
+                    <a href="javascript:void(0);">{{data.created_by.username}}</a>
                   </div>
                 </td>
                 <td class="action-table-data">
                   <div class="edit-delete-action">
-                    <a class="me-2 edit-icon  p-2" [routerLink] = "routes.productDetails">
+                    <a class="me-2 edit-icon  p-2" [routerLink] = "[routes.productDetails, data.id]">
                       <i class="feather icon-eye feather-eye"></i>
                     </a>
-                    <a class="me-2 p-2" [routerLink] = "routes.editProduct">
+                    <a class="me-2 p-2" [routerLink] = "[routes.editProduct, data.id]">
                       <i class="feather icon-edit feather-edit"></i>
                     </a>
                     <a class="confirm-text p-2" href="javascript:void(0);" (click)=confirmColor()>

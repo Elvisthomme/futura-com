@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { RestStoreFactory } from './rest.store';
-import { Category, Company, Product, User,Store } from '../core/core.index';
+import { Category, Company, Product, User,Store, Unit } from '../core/core.index';
 import { DashboardService } from '../core/service/dashboard/dashboard.service';
 
 
@@ -13,5 +13,6 @@ export class GlobalStore {
   users = this.factory.create<User>('/api/users');
   categories = this.factory.create<Category>('/api/categories');
   products = this.factory.create<Product>('/api/products');
+  units = this.factory.create<Unit>('/api/units');
   companies = this.factory.create<Company>('/api/companies');
 }

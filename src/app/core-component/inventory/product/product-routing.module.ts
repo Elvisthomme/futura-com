@@ -13,7 +13,7 @@ const routes: Routes = [
     component: ProductComponent,
     children: [
       {
-        path: 'edit-product',
+        path: 'edit-product/:id',
         component: EditProductComponent,
       },
       {
@@ -29,7 +29,7 @@ const routes: Routes = [
         component: ExpiredProductsComponent,
       },
       {
-        path: 'product-details',
+        path: 'product-details/:id',
         component: ProductDetailsComponent,
       },
     ],

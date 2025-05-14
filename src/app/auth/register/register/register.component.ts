@@ -12,6 +12,9 @@ import { Router, RouterModule } from '@angular/router';
 import { routes } from 'src/app/core/helpers/routes';
 import { AuthService, RegisterPayload } from 'src/app/core/service/auth/auth.service';
 import { CommonModule } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import {TranslateModule} from "@ngx-translate/core";
+import Swal from 'sweetalert2';
 
 const SUBDOMAIN_REGEX = /^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])?$/i;
 
@@ -27,17 +30,21 @@ export function passwordMatch(group: AbstractControl): ValidationErrors | null {
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   imports: [
-    CommonModule, ReactiveFormsModule, RouterModule
+    CommonModule, ReactiveFormsModule, RouterModule,TranslateModule
   ]
 })
 export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
-  private webstorge = inject(WebstorgeService);
-
   /** page routes for template */
   routes = routes;
 
+  constructor(private translate: TranslateService,private webstorage: WebstorgeService) {
+
+    this.translate.addLangs(['fr', 'en']);
+    this.translate.setDefaultLang(webstorage.getDefaultLang());
+    this.translate.use(webstorage.getDefaultLang());
+  }
 
   /** show/hide pwd fields */
   show = { password: false, confirm: false };
@@ -117,9 +124,26 @@ export class RegisterComponent {
     this.registerForm.disable();
     this.auth.register(payload).subscribe({
       next: () => {
-        this.webstorge.login();
+        this.webstorage.login();
       },
-      error: () => this.registerForm.enable()
+      error: (error) => {
+              this.registerForm.enable()
+              console.log(error)
+              const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: ' btn btn-success',
+                  cancelButton: 'me-2 btn btn-danger'
+                },
+                buttonsStyling: false
+              })
+
+                swalWithBootstrapButtons.fire(
+                  this.translate.instant('error'),
+                  error.data,
+                  'error'
+                )
+
+            }
     });
   }
 }
