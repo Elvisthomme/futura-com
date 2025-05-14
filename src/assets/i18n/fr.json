@@ -1,0 +1,94 @@
+{
+  "invalidCredentials": "Identifiants invalides. Veuillez réessayer.",
+  "unknowError": "Une erreur inconnue est survenue. Veuillez réessayer plus tard.",
+  "failedToLoadUserInfos": "Impossible de charger les informations de l'utilisateur. Veuillez réessayer plus tard.",
+  "failedToLoadStores": "Échec du chargement des magasins. Veuillez réessayer plus tard.",
+  "failedToLogout": "Échec de la déconnexion. Veuillez réessayer.",
+  "error": "Erreur !",
+
+  "register": {
+    "title": "Inscription",
+    "text": "Créer un nouveau compte FuturaCom",
+
+    "username": {
+      "label": "Nom d'utilisateur",
+      "required": "Le nom d'utilisateur est obligatoire",
+      "minLength": "Le nom d'utilisateur doit contenir au moins 4 caractères"
+    },
+
+    "company": {
+      "label": "Nom de l'entreprise",
+      "required": "Le nom de l'entreprise est obligatoire",
+      "minLength": "Le nom de l'entreprise doit contenir au moins 3 caractères"
+    },
+
+    "subdomain": {
+      "label": "Sous-domaine de l'entreprise",
+      "required": "Le sous-domaine est obligatoire",
+      "minLength": "Le sous-domaine doit contenir au moins 3 caractères",
+      "invalid": "Le sous-domaine fourni est invalide"
+    },
+
+    "email": {
+      "label": "Adresse e-mail",
+      "required": "L'adresse e-mail est obligatoire",
+      "invalid": "L'adresse e-mail fournie est invalide"
+    },
+
+    "password": {
+      "label": "Mot de passe",
+      "required": "Le mot de passe est obligatoire",
+      "minLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "confirmLabel": "Confirmer le mot de passe",
+      "confirmRequired": "La confirmation du mot de passe est obligatoire",
+      "mismatch": "La confirmation ne correspond pas au mot de passe"
+    },
+
+    "terms": {
+      "label": "J'accepte les ",
+      "privacy": "Conditions & Confidentialité",
+      "required": "Vous devez accepter les conditions"
+    },
+
+    "submit": "S'inscrire",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "loginInstead": "Connectez-vous plutôt",
+    "or": "OU"
+  },
+
+  "login": {
+    "title": "Connexion",
+    "text": "Accédez au panneau FuturaCom avec votre e-mail et votre mot de passe.",
+
+    "email": {
+      "label": "Adresse e-mail",
+      "required": "L'adresse e-mail est obligatoire",
+      "invalid": "L'adresse e-mail fournie est invalide"
+    },
+
+    "password": {
+      "label": "Mot de passe",
+      "required": "Le mot de passe est obligatoire"
+    },
+
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+
+    "newOnPlatform": "Nouveau sur notre plateforme ?",
+    "createAccount": "Créer un compte",
+
+    "or": "OU"
+  },
+
+  "header": {
+    "selectStore": "Sélectionner un magasin",
+    "viewAllNotifications": "Voir toutes les notifications",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "myProfile": "Mon profil"
+  },
+
+  "copyright": "Copyright © {{currentYear}} FuturaCom. Tous droits réservés"
+}

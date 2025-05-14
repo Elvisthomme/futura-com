@@ -1,0 +1,163 @@
+{
+  "invalidCredentials": "Invalid credentials. Please try again.",
+  "unknowError": "An unknown error occurred. Please try again later.",
+  "failedToLoadUserInfos": "Failed to load user's information. Please try again later.",
+  "failedToLoadStores": "Failed to load stores. Please try again later.",
+  "failedToLogout": "Failed to logout. Please try again",
+  "error": "Error!",
+
+  "register": {
+    "title": "Register",
+    "text": "Create New FuturaCom Account",
+
+    "username": {
+      "label": "Username",
+      "required": "Username is required",
+      "minLength": "Username must be at least 4 characters long"
+    },
+
+    "company": {
+      "label": "Company name",
+      "required": "Company name is required",
+      "minLength": "Company name must have 3 characters or more"
+    },
+
+    "subdomain": {
+      "label": "Company sub domain",
+      "required": "Company subdomain is required",
+      "minLength": "Company subdomain must have 3 characters or more",
+      "invalid": "Provided subdomain is invalid"
+    },
+
+    "email": {
+      "label": "Email address",
+      "required": "Email is required",
+      "invalid": "Provided email is invalid"
+    },
+
+    "password": {
+      "label": "Password",
+      "required": "Password is required",
+      "minLength": "Password must have 8 characters or more",
+      "confirmLabel": "Confirm password",
+      "confirmRequired": "Confirmation password is required",
+      "mismatch": "Provided password confirmation does not match with the password"
+    },
+
+    "terms": {
+      "label": "I agree to the ",
+      "privacy": "Terms & Privacy",
+      "required": "You must accept terms"
+    },
+
+    "submit": "Sign Up",
+    "alreadyHaveAccount": "Already have an account ?",
+    "loginInstead": "Sign In Instead",
+    "or": "OR"
+  },
+
+  "login": {
+    "title": "Sign In",
+    "text": "Access the FuturaCom panel using your email and passcode.",
+
+    "email": {
+      "label": "Email address",
+      "required": "Email is required",
+      "invalid": "Provided email is invalid"
+    },
+
+    "password": {
+      "label": "Password",
+      "required": "Password is required"
+    },
+
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot Password?",
+    "submit": "Sign In",
+
+    "newOnPlatform": "New on our platform?",
+    "createAccount": "Create an account",
+
+    "or": "OR"
+  },
+
+  "header": {
+    "selectStore": "Select Store",
+    "viewAllNotifications": "View all Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "myProfile": "My Profile"
+  },
+
+  "dashboard": {
+    "totalPurchaseDue": "Total Purchase Due",
+    "totalSalesDue": "Total Sales Due",
+    "totalSaleAmount": "Total Sale Amount",
+    "totalExpenseAmount": "Total Expense Amount",
+
+    "customers": "Customers",
+    "suppliers": "Suppliers",
+
+    "purchaseInvoice": "Purchase Invoice",
+    "salesInvoice": "Sales Invoice",
+
+    "purchaseAndSales": "Purchase & Sales",
+    "sales": "Sales",
+    "purchase": "Purchase",
+
+    "recentProducts": "Recent Products",
+    "products": "Products",
+    "action": "Action",
+    "manufacturedDate": "Manufactured date",
+    "expiredDate": "Expired date",
+    "viewAll": "View All",
+    "expiredProducts": "Expired Products"
+  },
+
+  "unitForm": {
+    "createTitle": "Create Unit",
+    "editTitle": "Edit Unit",
+    "nameLabel": "Name",
+    "shortNameLabel": "Short Name",
+    "statusLabel": "Status",
+    "nameRequired": "Name is required",
+    "shortNameRequired": "Short Name is required",
+    "successTitle": "Success",
+    "successMessage": "Unit successfully saved.",
+    "failTitle": "Failed",
+    "failMessage": "Failed to save unit.",
+    "cancelButton": "Cancel",
+    "createButton": "Create Unit",
+    "saveChangesButton": "Save Changes"
+  },
+  "units": {
+    "title": "Units",
+    "subtitle": "Manage your units",
+    "pdfTooltip": "Pdf",
+    "excelTooltip": "Excel",
+    "printTooltip": "Print",
+    "refreshTooltip": "Refresh",
+    "collapseTooltip": "Collapse",
+    "addNewUnitButton": "Add New Unit",
+    "searchPlaceholder": "Search...",
+    "sortByDate": "Sort by Date",
+    "chooseBrand": "Choose Brand",
+    "chooseDate": "Choose Date",
+    "chooseStatus": "Choose Status",
+    "searchButton": "Search",
+    "tableHeaders": {
+      "unit": "Unit",
+      "shortName": "Short name",
+      "noOfProducts": "No of Products",
+      "createdOn": "Created On",
+      "status": "Status",
+      "action": "Action"
+    },
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
+  "copyright": "Copyright © {{currentYear}} FuturaCom. All rights reserved"
+}
