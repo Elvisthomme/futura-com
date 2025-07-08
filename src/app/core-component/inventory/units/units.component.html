@@ -155,7 +155,7 @@
                 <span class="checkmarks"></span>
               </label>
             </td>
-            <td>{{data.name}} </td>
+            <td>{{data.name}}</td>
             <td>{{data.short_name}}</td>
             <td>{{data.num_of_product}}</td>
             <td>{{data.created_at | date}}</td>
@@ -171,7 +171,7 @@
                   data-bs-toggle="modal" data-bs-target="#add-units">
                   <i class="feather icon-edit feather-edit"></i>
                 </a>
-                <a class="confirm-text p-2" href="javascript:void(0);" (click)=confirmColor()>
+                <a class="confirm-text p-2" href="javascript:void(0);" (click)=confirmDelete(data.id)>
                   <i class="feather icon-trash-2 feather-trash-2"></i>
                 </a>
               </div>

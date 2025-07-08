@@ -152,22 +152,28 @@ export class AdminDashboardComponent implements OnInit {
 
     });
   }
-
   private prepareYearData(): void {
-    this.years = Object.keys(this.dashboardMetrics.sales)
-      .map(Number)
-      .sort((a, b) => b - a);
-    this.selectedYear = this.years[0];
+    if (this.dashboardMetrics?.sales && typeof this.dashboardMetrics.sales === 'object') {
+      this.years = Object.keys(this.dashboardMetrics.sales)
+        .map(Number)
+        .sort((a, b) => b - a);
+      this.selectedYear = this.years[0];
+    } else {
+      this.years = [];
+    }
   }
 
   private prepareChart(): void {
-    const sales = Object.values(
-      this.dashboardMetrics.sales[this.selectedYear]
-    ).map((v) => this.toNumber(v));
+    const salesData = this.dashboardMetrics?.sales?.[this.selectedYear];
+    const purchasesData = this.dashboardMetrics?.purchases?.[this.selectedYear];
 
-    const purchases = Object.values(
-      this.dashboardMetrics.purchases[this.selectedYear]
-    ).map((v) => -this.toNumber(v));
+    const sales = salesData && typeof salesData === 'object'
+      ? Object.values(salesData).map((v) => this.toNumber(v))
+      : [];
+
+    const purchases = purchasesData && typeof purchasesData === 'object'
+      ? Object.values(purchasesData).map((v) => -this.toNumber(v))
+      : [];
 
     this.chartOptions = {
       ...this.chartOptions,

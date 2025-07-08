@@ -159,5 +159,50 @@
       "inactive": "Inactive"
     }
   },
+
+  "brandForm": {
+    "createTitle": "Create Brand",
+    "editTitle": "Edit Brand",
+    "nameLabel": "Name",
+    "shortNameLabel": "Short Name",
+    "statusLabel": "Status",
+    "nameRequired": "Name is required",
+    "shortNameRequired": "Short Name is required",
+    "successTitle": "Success",
+    "successMessage": "Brand successfully saved.",
+    "failTitle": "Failed",
+    "failMessage": "Failed to save brand.",
+    "cancelButton": "Cancel",
+    "createButton": "Create Brand",
+    "saveChangesButton": "Save Changes"
+  },
+  "brands": {
+    "title": "Brands",
+    "subtitle": "Manage your brands",
+    "pdfTooltip": "Pdf",
+    "excelTooltip": "Excel",
+    "printTooltip": "Print",
+    "refreshTooltip": "Refresh",
+    "collapseTooltip": "Collapse",
+    "addNewBrandButton": "Add New Brand",
+    "searchPlaceholder": "Search...",
+    "sortByDate": "Sort by Date",
+    "chooseBrand": "Choose Brand",
+    "chooseDate": "Choose Date",
+    "chooseStatus": "Choose Status",
+    "searchButton": "Search",
+    "tableHeaders": {
+      "brand": "Brand",
+      "shortName": "Short name",
+      "noOfProducts": "No of Products",
+      "createdOn": "Created On",
+      "status": "Status",
+      "action": "Action"
+    },
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
   "copyright": "Copyright © {{currentYear}} FuturaCom. All rights reserved"
 }

@@ -1,14 +1,10 @@
 // unit-form.component.ts
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { SpinnerService, Unit } from 'src/app/core/core.index';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { SpinnerService } from 'src/app/core/core.index';
 import { GlobalStore } from 'src/app/store/app.store';
-import {
-  FormControl,
-  Validators,
-  FormGroup
-} from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 
-interface UnitPayload {
+export interface UnitPayload {
   name: string;
   short_name: string;
   status: 'Inactive' | 'Active';
@@ -30,15 +26,15 @@ export class UnitFormComponent {
   /** form */
   unitForm = new FormGroup({
     name: new FormControl(this.units.editItem()?.name ?? '', [Validators.required]),
-    short_name: new FormControl(this.units.editItem()?.short_name ??'', [Validators.required]),
-    status: new FormControl(this.units.editItem()?.status === 'Active' ? true : false , [Validators.required]),
+    short_name: new FormControl(this.units.editItem()?.short_name ?? '', [Validators.required]),
+    status: new FormControl(this.units.editItem()?.status === 'Active' ? true : false, [Validators.required]),
   });
 
   reloadForm() {
     this.unitForm = new FormGroup({
       name: new FormControl(this.units.editItem()?.name ?? '', [Validators.required]),
-      short_name: new FormControl(this.units.editItem()?.short_name ??'', [Validators.required]),
-      status: new FormControl(this.units.editItem()?.status === 'Active' ? true : false , [Validators.required]),
+      short_name: new FormControl(this.units.editItem()?.short_name ?? '', [Validators.required]),
+      status: new FormControl(this.units.editItem()?.status === 'Active' ? true : false, [Validators.required]),
     });
   }
 
@@ -82,7 +78,7 @@ export class UnitFormComponent {
 
     this.unitForm.disable();
     this.spinner.show()
-    if (this.units.editItem()!==null) {
+    if (this.units.editItem() !== null) {
       // Update existing unit
       this.units.update(this.units.editItem()!.id, payload).subscribe({
         next: () => {

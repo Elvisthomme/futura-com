@@ -5,7 +5,8 @@
         <div class="content">
           <div class="modal-header border-0 custom-modal-header">
             <div class="page-title">
-              <h4 class="modal-title">{{ units.editItem() ? ('unitForm.editTitle' | translate) : ('unitForm.createTitle' | translate) }}</h4>
+              <h4 class="modal-title">{{ units.editItem() ? ('unitForm.editTitle' | translate) : ('unitForm.createTitle'
+                | translate) }}</h4>
             </div>
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -47,9 +48,11 @@
                 </div>
               </div>
               <div class="modal-footer-btn">
-                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">{{ 'unitForm.cancelButton' | translate }}</button>
+                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">{{ 'unitForm.cancelButton' |
+                  translate }}</button>
                 <button type="submit" class="btn btn-submit" [disabled]="unitForm.pending">
-                  <span *ngIf="!unitForm.pending"> {{ units.editItem() ? ('unitForm.saveChangesButton' | translate) : ('unitForm.createButton' | translate) }}</span>
+                  <span *ngIf="!unitForm.pending"> {{ units.editItem() ? ('unitForm.saveChangesButton' | translate) :
+                    ('unitForm.createButton' | translate) }}</span>
                   <span *ngIf="unitForm.pending" class="spinner-border spinner-border-sm"></span>
                 </button>
               </div>

@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject, ViewChild } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from 'primeng/api';
 import {
-  DataService,
-  pageSelection,
-  apiResultFormat,
   routes,
   SidebarService,
+  SpinnerService,
+  Brand,
 } from 'src/app/core/core.index';
-import { brandList } from 'src/app/shared/model/page.model';
-import { PaginationService, tablePageSize } from 'src/app/shared/shared.index';
+import { GlobalStore } from 'src/app/store/app.store';
 import Swal from 'sweetalert2';
+import { BrandFormComponent } from './brand-form/brand-form.component';
 
 interface data {
   value: string;
@@ -21,78 +21,44 @@ interface data {
   templateUrl: './brand-list.component.html',
   styleUrl: './brand-list.component.scss',
 })
-export class BrandListComponent {
+export class BrandListComponent{
   initChecked = false;
   public routes = routes;
   // pagination variables
-  public tableData: Array<brandList> = [];
-  public pageSize = 10;
-  public serialNumberArray: Array<number> = [];
-  public totalData = 0;
+  // pagination variables
+  brands = this.globalStore.brands
+  private readonly messageService = inject(MessageService);
+  private readonly translate = inject(TranslateService);
   showFilter = false;
-  dataSource!: MatTableDataSource<brandList>;
+  dataSource = new MatTableDataSource<Brand>();
   public searchDataValue = '';
-  //** / pagination variables
+  @ViewChild(BrandFormComponent) brandForm!: BrandFormComponent;
 
   constructor(
-    private data: DataService,
-    private pagination: PaginationService,
-    private router: Router,
-    private sidebar: SidebarService
+    private sidebar: SidebarService,
+    private globalStore: GlobalStore,
+    private spinner: SpinnerService
   ) {
-    this.data.getDataTable().subscribe((apiRes: apiResultFormat) => {
-      this.totalData = apiRes.totalData;
-      this.pagination.tablePageSize.subscribe((res: tablePageSize) => {
-        if (this.router.url == this.routes.brandList) {
-          this.getTableData({ skip: res.skip, limit: this.totalData  });
-          this.pageSize = res.pageSize;
-        }
-      });
+    this.loaadBrands();
+    effect(() => {
+      this.dataSource.data = this.brands.items();  // always fresh
     });
   }
 
-  private getTableData(pageOption: pageSelection): void {
-    this.data.getBrandList().subscribe((apiRes: apiResultFormat) => {
-      this.tableData = [];
-      this.serialNumberArray = [];
-      this.totalData = apiRes.totalData;
-      apiRes.data.map((res: brandList, index: number) => {
-        const serialNumber = index + 1;
-        if (index >= pageOption.skip && serialNumber <= pageOption.limit) {
-          res.sNo = serialNumber;
-          this.tableData.push(res);
-          this.serialNumberArray.push(serialNumber);
-        }
-      });
-      this.dataSource = new MatTableDataSource<brandList>(this.tableData);
-      this.pagination.calculatePageSize.next({
-        totalData: this.totalData,
-        pageSize: this.pageSize,
-        tableData: this.tableData,
-        serialNumberArray: this.serialNumberArray,
-      });
-    });
-  }
+  loaadBrands() {
 
+    this.spinner.show();
+    this.brands.list().subscribe();
+  }
   public sortData(sort: Sort) {
-    const data = this.tableData.slice();
-    if (!sort.active || sort.direction === '') {
-      this.tableData = data;
-    } else {
-      this.tableData = data.sort((a, b) => {
-        const aValue = (a as never)[sort.active];
-        const bValue = (b as never)[sort.active];
-        return (aValue < bValue ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
-      });
-    }
+    this.brands.sortItems(sort)
   }
 
-  public searchData(value: string): void {
+  searchData(value: string) {
     this.dataSource.filter = value.trim().toLowerCase();
-    this.tableData = this.dataSource.filteredData;
   }
 
-  confirmColor() {
+  confirmDelete(id: number | string) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: ' btn btn-success',
@@ -112,11 +78,22 @@ export class BrandListComponent {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          );
+          this.brands.destroy(id).subscribe({
+            next: () => {
+              swalWithBootstrapButtons.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              );
+            },
+            error: () => {
+              swalWithBootstrapButtons.fire(
+                'Failed',
+                'Failed to delete brand',
+                'error'
+              );
+            }
+          })
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
             'Cancelled',
@@ -159,13 +136,38 @@ export class BrandListComponent {
   }
   selectAll(initChecked: boolean) {
     if (!initChecked) {
-      this.tableData.forEach((f) => {
-        f.isSelected = true;
+      this.brands.items().forEach((f) => {
+        f.is_selected = true;
       });
     } else {
-      this.tableData.forEach((f) => {
-        f.isSelected = false;
+      this.brands.items().forEach((f) => {
+        f.is_selected = false;
       });
     }
+  }
+
+  addNewBrand() {
+    this.brands.edit(null);
+  }
+
+  editBrand(brand: Brand) {
+    this.brands.edit(brand)
+    this.brandForm.reloadForm()
+  }
+
+  showSavedSucessMsg() {
+    this.messageService.add({
+      summary: this.translate.instant('brandForm.successTitle'),
+      detail: this.translate.instant('brandForm.successMessage'),
+      styleClass: 'success-light-popover',
+    });
+  }
+
+  showSaveFailMsg() {
+    this.messageService.add({
+      summary: this.translate.instant('brandForm.failTitle'),
+      detail: this.translate.instant('brandForm.failMessage'),
+      styleClass: 'danger-light-popover',
+    });
   }
 }

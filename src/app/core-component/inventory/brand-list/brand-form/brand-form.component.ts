@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { SpinnerService } from 'src/app/core/core.index';
 import { GlobalStore } from 'src/app/store/app.store';
 
@@ -7,7 +8,7 @@ import { GlobalStore } from 'src/app/store/app.store';
 interface BrandPayload {
   name: string;
   image_url: string;
-  state: 'Inactive' | 'Active';
+  status: 'Inactive' | 'Active';
 }
 
 @Component({
@@ -20,22 +21,29 @@ export class BrandFormComponent {
   @Output() showSaveFailMsg = new EventEmitter<void>();
   private readonly globalStore = inject(GlobalStore);
   private readonly spinner = inject(SpinnerService);
+  private readonly messageService = inject(MessageService);
 
   brands = this.globalStore.brands;
+
+  imageFile: File | null = null;       // <— selected file
+  previewUrl: string | null = null;    // <— src for <img>
+  showPlaceholder = true;              // <— controls the plus icon
 
   /** form */
   brandForm = new FormGroup({
     name: new FormControl(this.brands.editItem()?.name ?? '', [Validators.required]),
-    image_url: new FormControl(this.brands.editItem()?.image_url ?? '', [Validators.required]),
-    state: new FormControl(this.brands.editItem()?.state === 'Active' ? true : false, [Validators.required]),
+    status: new FormControl(this.brands.editItem()?.status === 'Active' ? 'true' : 'false', [Validators.required]),
   });
 
   reloadForm() {
     this.brandForm = new FormGroup({
       name: new FormControl(this.brands.editItem()?.name ?? '', [Validators.required]),
-      image_url: new FormControl(this.brands.editItem()?.image_url ?? '', [Validators.required]),
-      state: new FormControl(this.brands.editItem()?.state === 'Active' ? true : false, [Validators.required]),
+      status: new FormControl(this.brands.editItem()?.status === 'Active' ? 'true' : 'false', [Validators.required]),
     });
+    if (this.brands.editItem()?.image_url) {
+      this.previewUrl =  this.brands.editItem()!.image_url!;
+      this.showPlaceholder = false;
+    }
   }
 
   /** alias for template */
@@ -58,6 +66,35 @@ export class BrandFormComponent {
     return this.brandForm.controls[field].touched && this.brandForm.controls[field].errors?.['required']
   }
 
+  onFileSelected(e: Event) {
+    const file = (e.target as HTMLInputElement).files?.[0] ?? null;
+  
+    if (!file) {
+      return;
+    }
+  
+    // ✅ Validate file size (max 2MB)
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSizeInBytes) {
+      this.messageService.add({
+        summary: 'Fail to upload',
+        detail: 'The selected image is too large. Maximum size is 2MB (2048 KB).',
+        styleClass: 'danger-light-popover',
+      });
+      return;
+    }
+  
+    this.imageFile = file;
+  
+    const reader = new FileReader();
+    reader.readAsDataURL(this.imageFile);
+    reader.onload = (ev: ProgressEvent<FileReader>) => {
+      this.previewUrl = ev.target?.result as string | null;
+      if (this.previewUrl) {
+        this.showPlaceholder = false;
+      }
+    };
+  }
   /** submit handler */
   onSubmit(): void {
     this.submitted = true;
@@ -66,21 +103,28 @@ export class BrandFormComponent {
       return;
     }
 
-    const v = this.brandForm.value;
-
-    const payload: BrandPayload = {
-      name: v.name!,
-      image_url: v.image_url!,
-      state: v.state! ? 'Active' : 'Inactive'
-    };
-
-    console.log(payload);
-
     this.brandForm.disable();
     this.spinner.show()
+    const v = this.brandForm.value;
+
+    const fd = new FormData();
+    fd.append('name', v.name!);
+    fd.append('status', v.status ? 'Active' : 'Inactive');
+    if (this.imageFile) {
+      fd.append('image_url', this.imageFile);   // <-- key must match Laravel field
+    }
+
+    // 2. call the store (cast keeps TypeScript happy)
+    const call = this.brands.editItem()
+      ? this.brands.update(this.brands.editItem()!.id, fd as unknown as Partial<BrandPayload>)
+      : this.brands.create(fd as unknown as Partial<BrandPayload>);
+
+
+    console.log(fd);
+
     if (this.brands.editItem() !== null) {
       // Update existing brand
-      this.brands.update(this.brands.editItem()!.id, payload).subscribe({
+      call.subscribe({
         next: () => {
           this.brandForm.enable();
           this.closeModal();
@@ -96,7 +140,7 @@ export class BrandFormComponent {
       });
     } else {
       // Create new brand
-      this.globalStore.brands.create(payload).subscribe({
+      call.subscribe({
         next: () => {
           this.brandForm.enable();
           this.closeModal();

@@ -2,18 +2,12 @@ import { GlobalStore } from 'src/app/store/app.store';
 import { Component, effect, inject, OnInit, ViewChild } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { NavigationEnd, Router } from '@angular/router';
-import { SidebarService, SpinnerService, Unit, apiResultFormat } from 'src/app/core/core.index';
+import { SidebarService, SpinnerService, Unit, } from 'src/app/core/core.index';
 import { routes } from 'src/app/core/helpers/routes';
-import { DataService } from 'src/app/core/service/data/data.service';
-import { unit } from 'src/app/shared/model/page.model';
-import { PaginationService, pageSelection, tablePageSize } from 'src/app/shared/shared.index';
 import Swal from 'sweetalert2';
-import { Pagination } from 'src/app/store/rest.store';
 import { UnitFormComponent } from './unit-form/unit-form.component';
 import { MessageService } from 'primeng/api';
 import { TranslateService } from '@ngx-translate/core';
-import { FormGroup } from '@angular/forms';
 
 interface data {
   value: string;
@@ -24,7 +18,7 @@ interface data {
   templateUrl: './units.component.html',
   styleUrl: './units.component.scss'
 })
-export class UnitsComponent implements OnInit {
+export class UnitsComponent {
   public selectedValue1 = '';
   public selectedValue2 = '';
   public selectedValue3 = '';
@@ -57,8 +51,6 @@ export class UnitsComponent implements OnInit {
     private globalStore: GlobalStore,
     private spinner: SpinnerService
   ) {
-  }
-  ngOnInit(): void {
     // kick-off the first fetch – after that everything is reactive
     this.loaadUnits();
     effect(() => {
@@ -82,20 +74,22 @@ export class UnitsComponent implements OnInit {
   }
 
   selectedList3: data[] = [
-    { value: 'Sort by Datee' },
+    { value: 'Sort by Date' },
     { value: 'Newest' },
     { value: 'Oldest' },
   ];
   selectedList1: data[] = [
     { value: 'Choose Status' },
-    { value: 'Active' },
-    { value: 'Inactive' },
+    { value: this.translate.instant('units.statuses.active') },
+    { value: this.translate.instant('units.statuses.inactive') },
   ];
   selectedList2: data[] = [
     { value: 'Choose Unit' },
-    { value: 'Piece' },
-    { value: 'Kilogram' },
-    { value: 'Gram' },
+    ...this.units.items().map(unit => {
+      return {
+        value: unit.name
+      }
+    }),
   ];
   public filter = false;
   openFilter() {
@@ -106,7 +100,7 @@ export class UnitsComponent implements OnInit {
     this.sidebar.toggleCollapse();
     this.isCollapsed = !this.isCollapsed;
   }
-  confirmColor() {
+  confirmDelete(id: number | string) {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: ' btn btn-success',
@@ -126,11 +120,22 @@ export class UnitsComponent implements OnInit {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          );
+          this.units.destroy(id).subscribe({
+            next: () => {
+              swalWithBootstrapButtons.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              );
+            },
+            error: () => {
+              swalWithBootstrapButtons.fire(
+                'Failed',
+                'Failed to delete unit',
+                'error'
+              );
+            }
+          })
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
             'Cancelled',

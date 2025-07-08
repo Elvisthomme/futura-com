@@ -14,6 +14,7 @@ import { UnitFormComponent } from './units/unit-form/unit-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
+import { BrandFormComponent } from './brand-list/brand-form/brand-form.component';
 
 
 
@@ -26,7 +27,8 @@ import { MessageService } from 'primeng/api';
     UnitFormComponent,
     UnitsComponent,
     VarriantAttributesComponent,
-    QrcodeComponent
+    QrcodeComponent,
+    BrandFormComponent
   ],
   imports: [
     CommonModule,

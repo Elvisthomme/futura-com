@@ -107,28 +107,42 @@ export class RestStoreFactory {
     const write = <R>(
       method: 'post' | 'put' | 'patch' | 'delete',
       url = '',
-      data?: object
+      data?: object | FormData          // <-- accept FormData
     ): Observable<R> => {
-      if (method === 'put' || method === 'patch') {
-        data = { _method: method, ...data }; // Laravel workaround
-        method = 'post'; // Laravel workaround
+
+      // Laravel “_method” trick still required when we send multipart:
+      if ((method === 'put' || method === 'patch') && data instanceof FormData) {
+        data.append('_method', method);
+        method = 'post';
+      } else if (method === 'put' || method === 'patch') {
+        data = { _method: method, ...data };
+        method = 'post';
       }
-      return this.csrf.init().pipe(                           // 🔐 1. ensure cookie
-        switchMap(() =>                               // 🔐 2. real request
-          from(this.http.request<R>({ url: endpoint + url, method, data }))
-        ),
+
+      // Axios – let the browser set the proper multipart boundary
+      const config = {
+        url: endpoint + url,
+        method,
+        data,
+        headers: data instanceof FormData ? undefined : { 'Content-Type': 'application/json' }
+      };
+
+      return this.csrf.init().pipe(
+        switchMap(() => from(this.http.request<R>(config))),
         map((r: AxiosResponse<R>) => r.data)
       );
-    }
+    };
+
 
     /* ----------------------------------------------------------------
      * 4️⃣  Public CRUD API ------------------------------------------------*/
     const list = (params?: string) =>
       get<PaginatedResponse<T>>('', params).pipe(
         map(resp => {
-          _items.set(resp.data);
+          if (resp.data.length > 0)
+            resp.data.forEach(e => upsert(e))
           _pagination.set({ links: resp.links, meta: resp.meta });
-          console.log(resp.data);
+          console.log(resp);
           return resp;
         })
       );
@@ -170,17 +184,17 @@ export class RestStoreFactory {
         })
       );
 
-      const select = (item: T) => {
-        _selectedItem.set(item);
-        write<T>('patch', `/${item.id}`).pipe(
-          map(resp => {
-            return resp;
-          })
-        )
-      };
-      const edit = (item: T|null) => {
-        _editItem.set(item);
-      };
+    const select = (item: T) => {
+      _selectedItem.set(item);
+      write<T>('patch', `/${item.id}`).pipe(
+        map(resp => {
+          return resp;
+        })
+      )
+    };
+    const edit = (item: T | null) => {
+      _editItem.set(item);
+    };
 
     const destroy = (id: Id) =>
       write<null>('delete', `/${id}`).pipe(
@@ -188,6 +202,6 @@ export class RestStoreFactory {
       );
 
     /* Everything the rest of the app needs */
-    return { selectedItem,editItem, items, count, pageInfo, sortItems, list, find, create, update, destroy, select,edit };
+    return { selectedItem, editItem, items, count, pageInfo, sortItems, list, find, create, update, destroy, select, edit };
   }
 }
